@@ -1,79 +1,50 @@
-# GraphRAG
+# GraphRAG-6 知识工程综合实践
 
-> [!WARNING]
-> GraphRAG is a research project that explores the functional use of graphs to form a targeted context for question answering. Since our first release in July 2024 the capabilities of frontier models have changed dramatically, and our portfolio of research projects has diversified to match. This project is largely in maintenance mode, and won't be accepting new PRs or implementing new features. We'll perform bug fixes and dependency updates as appropriate, particularly to address CVEs as they arise.
+本项目是知识工程综合实践小组的 GraphRAG 系统工程。项目目标不是只完成一个能运行的问答 Demo，而是建立一套可复现、可解释、可比较、便于小组协作的 GraphRAG 实验系统。
 
-👉 [Microsoft Research Blog Post](https://www.microsoft.com/en-us/research/blog/graphrag-unlocking-llm-discovery-on-narrative-private-data/)<br/>
-👉 [Read the docs](https://microsoft.github.io/graphrag)<br/>
-👉 [GraphRAG Arxiv](https://arxiv.org/pdf/2404.16130)
+## 项目目标
 
-<div align="left">
-  <a href="https://pypi.org/project/graphrag/">
-    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/graphrag">
-  </a>
-  <a href="https://pypi.org/project/graphrag/">
-    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/graphrag">
-  </a>
-  <a href="https://github.com/microsoft/graphrag/issues">
-    <img alt="GitHub Issues" src="https://img.shields.io/github/issues/microsoft/graphrag">
-  </a>
-  <a href="https://github.com/microsoft/graphrag/discussions">
-    <img alt="GitHub Discussions" src="https://img.shields.io/github/discussions/microsoft/graphrag">
-  </a>
-</div>
+在公开数据集和开放文本上，完成知识图谱构建、检索、知识注入与问答生成，并在相同模型、数据、提示词和输出格式下，对比 Vector RAG、GraphRAG 和 Hybrid RAG 的效果、成本与延迟。
 
-## Overview
+项目结论以实验数据为依据：如果图检索没有在某类问题上优于向量检索，也要记录原因和适用边界，不预设“GraphRAG 必然更好”。
 
-The GraphRAG project is a data pipeline and transformation suite that is designed to extract meaningful, structured data from unstructured text using the power of LLMs.
+## 当前阶段
 
-To learn more about GraphRAG and how it can be used to enhance your LLM's ability to reason about your private data, please visit the <a href="https://www.microsoft.com/en-us/research/blog/graphrag-unlocking-llm-discovery-on-narrative-private-data/" target="_blank">Microsoft Research Blog Post.</a>
+- 已完成课程要求解析并归档原始课件。
+- 已保留远程仓库原有的初始化记录。
+- 已导入一个高 Star GraphRAG 工程作为可运行基线，并固定基线 commit。
+- 已确定 GraphRAG-Bench 作为主要统一评测集，先小样本跑通，再扩展到完整数据。
+- 当前尚未修改基线核心算法，下一步是环境验证、数据准备和 Vector 基线复现。
 
-## Quickstart
+## 文档入口
 
-To get started with the GraphRAG system we recommend trying the [command line quickstart](https://microsoft.github.io/graphrag/get_started/).
+- [课程要求与逐项检查表](docs/课程要求.md)
+- [项目章程与开发路线](docs/项目章程与路线.md)
+- [基线说明](docs/基线说明.md)
+- [评测方案](docs/评测方案.md)
+- [开放数据资产清单](docs/数据资产清单.md)
+- [协作与质量规范](docs/协作与质量规范.md)
+- [阶段变更记录](docs/变更记录.md)
+- [老师原始课件](docs/参考资料/课程要求.pptx)
 
-## Repository Guidance
+## 代码基线
 
-This repository presents a methodology for using knowledge graph memory structures to enhance LLM outputs. Please note that the provided code serves as a demonstration and is not an officially supported Microsoft offering.
+基线代码已经放在本仓库根目录，当前只记录基线导入，不把它当作最终方案。基线版本、仓库状态、许可证、运行风险和后续修改边界见[基线说明](docs/基线说明.md)。
 
-⚠️ _Warning: GraphRAG indexing can be an expensive operation, please read all of the documentation to understand the process and costs involved, and start small._
+## 评测主线
 
-## Diving Deeper
+1. 先用 GraphRAG-Bench 的 100 条样本完成端到端冒烟测试。
+2. 对同一批问题运行 Vector、Graph 和 Hybrid 三种检索配置。
+3. 记录答案正确性、ROUGE-L、覆盖率、忠实度、证据召回、上下文相关性、索引结构、延迟和成本。
+4. 冒烟测试稳定后，再运行 Novel 和 Medical 的完整测试，并保存原始输出与汇总结果。
 
-- To learn about our contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md)
-- To start developing _GraphRAG_, see [DEVELOPING.md](./DEVELOPING.md)
-- Join the conversation and provide feedback in the [GitHub Discussions tab!](https://github.com/microsoft/graphrag/discussions)
+## 协作原则
 
-## Prompt Tuning
+- 每个阶段以小而清晰的 commit 存档，commit message 写明目的。
+- 代码变更必须有对应文档、测试或实验记录。
+- 合并前先运行测试和静态检查；发现自动生成代码错误时先修正，再验收合并。
+- 仓库不保存聊天记录、内部上下文、密钥、个人隐私或无用途的中间文件。
 
-Using _GraphRAG_ with your data out of the box may not yield the best possible results.
-We strongly recommend to fine-tune your prompts following the [Prompt Tuning Guide](https://microsoft.github.io/graphrag/prompt_tuning/overview/) in our documentation.
+## 许可证说明
 
-## Versioning
-
-Please see the [breaking changes](./breaking-changes.md) document for notes on our approach to versioning the project.
-
-_Always run `graphrag init --root [path] --force` between minor version bumps to ensure you have the latest config format. Run the provided migration notebook between major version bumps if you want to avoid re-indexing prior datasets. Note that this will overwrite your configuration and prompts, so back them up if necessary._
-
-## Responsible AI FAQ
-
-See [RAI_TRANSPARENCY.md](./RAI_TRANSPARENCY.md)
-
-- [What is GraphRAG?](./RAI_TRANSPARENCY.md#what-is-graphrag)
-- [What can GraphRAG do?](./RAI_TRANSPARENCY.md#what-can-graphrag-do)
-- [What are GraphRAG’s intended use(s)?](./RAI_TRANSPARENCY.md#what-are-graphrags-intended-uses)
-- [How was GraphRAG evaluated? What metrics are used to measure performance?](./RAI_TRANSPARENCY.md#how-was-graphrag-evaluated-what-metrics-are-used-to-measure-performance)
-- [What are the limitations of GraphRAG? How can users minimize the impact of GraphRAG’s limitations when using the system?](./RAI_TRANSPARENCY.md#what-are-the-limitations-of-graphrag-how-can-users-minimize-the-impact-of-graphrags-limitations-when-using-the-system)
-- [What operational factors and settings allow for effective and responsible use of GraphRAG?](./RAI_TRANSPARENCY.md#what-operational-factors-and-settings-allow-for-effective-and-responsible-use-of-graphrag)
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
-trademarks or logos is subject to and must follow
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
-
-## Privacy
-
-[Microsoft Privacy Statement](https://privacy.microsoft.com/en-us/privacystatement)
+基线目录中的许可证和版权声明保留原样。新增代码、文档和实验产物的许可证与数据许可将在对应文件或数据记录中明确说明。
