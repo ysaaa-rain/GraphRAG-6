@@ -1,0 +1,78 @@
+[project]
+name = "graphrag"
+# Maintainers: do not change the version here manually
+version = "3.1.2"
+description = "GraphRAG: A graph-based retrieval-augmented generation (RAG) system."
+authors = [
+    {name = "Alonso Guevara Fernández", email = "alonsog@microsoft.com"},
+    {name = "Andrés Morales Esquivel", email = "andresmor@microsoft.com"},
+    {name = "Chris Trevino", email = "chtrevin@microsoft.com"},
+    {name = "David Tittsworth", email = "datittsw@microsoft.com"},
+    {name = "Dayenne de Souza", email = "ddesouza@microsoft.com"},
+    {name = "Derek Worthen", email = "deworthe@microsoft.com"},
+    {name = "Gaudy Blanco Meneses", email = "gaudyb@microsoft.com"},
+    {name = "Ha Trinh", email = "trinhha@microsoft.com"},
+    {name = "Jonathan Larson", email = "jolarso@microsoft.com"},
+    {name = "Josh Bradley", email = "joshbradley@microsoft.com"},
+    {name = "Kate Lytvynets", email = "kalytv@microsoft.com"},
+    {name = "Kenny Zhang", email = "zhangken@microsoft.com"},
+    {name = "Mónica Carvajal"},
+    {name = "Nathan Evans", email = "naevans@microsoft.com"},
+    {name = "Rodrigo Racanicci", email = "rracanicci@microsoft.com"},
+    {name = "Sarah Smith", email = "smithsarah@microsoft.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "azure-identity~=1.25",
+    "azure-search-documents~=12.0",
+    "azure-storage-blob~=12.30",
+    "devtools~=0.12",
+    "graphrag-cache==3.1.2",
+    "graphrag-chunking==3.1.2",
+    "graphrag-common==3.1.2",
+    "graphrag-input==3.1.2",
+    "graphrag-llm==3.1.2",
+    "graphrag-storage==3.1.2",
+    "graphrag-vectors==3.1.2",
+    # Hold on the 1.2.x line: graspologic-native 1.3.x changes Leiden clustering
+    # output (community counts/levels), which breaks pinned regression tests and the
+    # golden community data. Revisit deliberately with a golden-data refresh.
+    "graspologic-native>=1.2,<1.3",
+    "json-repair~=0.63",
+    "networkx~=3.6",
+    # Hold on the 3.9.x line: nltk 3.10 changes the perceptron POS tagger /
+    # tokenizer output, which shifts the deterministic noun-phrase extraction
+    # counts and breaks the pinned NLP regression tests (test_extract_graph_nlp).
+    # Revisit deliberately with a golden-data refresh.
+    "nltk~=3.9.0",
+    "numpy~=2.4",
+    "pandas~=3.0",
+    "pyarrow~=25.0",
+    "pydantic~=2.13",
+    "spacy~=3.8",
+    "blis~=1.3",
+    "textblob~=0.20",
+    "tqdm~=4.70",
+    "typing-extensions~=4.16",
+    "typer~=0.27",
+]
+
+[project.scripts]
+graphrag = "graphrag.cli.main:app"
+
+[project.urls]
+Source = "https://github.com/microsoft/graphrag"
+
+[build-system]
+requires = ["hatchling>=1.27.0,<2.0.0"]
+build-backend = "hatchling.build"
+
