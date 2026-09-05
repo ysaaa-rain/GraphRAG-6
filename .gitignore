@@ -34,6 +34,13 @@ __pycache__
 
 .pipeline
 
+# Project data and experiment outputs
+data/raw/
+data/processed/
+artifacts/
+runs/
+experiments/outputs/
+
 # Azurite
 temp_azurite/
 __azurite*.json
