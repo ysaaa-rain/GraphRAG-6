@@ -26,6 +26,8 @@ packages/graphrag-llm/notebooks/metrics
 packages/graphrag-llm/notebooks/cache
 
 .env
+.env.*
+!.env.example
 build.zip
 
 .turbo
