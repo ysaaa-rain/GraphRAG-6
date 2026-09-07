@@ -1,0 +1,119 @@
+completion_models:
+  default_completion_model:
+    model_provider: openai
+    model: deepseek-v4-flash
+    auth_method: api_key
+    api_key: ${GRAPHRAG_API_KEY}
+    api_base: ${GRAPHRAG_API_BASE}
+    call_args:
+      max_tokens: 4000
+      extra_body:
+        thinking:
+          type: disabled
+    retry:
+      type: exponential_backoff
+
+embedding_models:
+  default_embedding_model:
+    model_provider: openai
+    model: ${GRAPHRAG_EMBEDDING_MODEL}
+    auth_method: api_key
+    api_key: local-embedding
+    api_base: ${GRAPHRAG_EMBEDDING_ENDPOINT}
+    retry:
+      type: exponential_backoff
+
+concurrent_requests: 2
+
+input:
+  type: jsonl
+  id_column: id
+  title_column: title
+  text_column: text
+
+chunking:
+  type: tokens
+  size: 1200
+  overlap: 100
+  encoding_model: o200k_base
+
+input_storage:
+  type: file
+  base_dir: "../../data/processed/benchmark/novel"
+
+output_storage:
+  type: file
+  base_dir: "../../experiments/outputs/benchmark_novel/output"
+
+reporting:
+  type: file
+  base_dir: "../../experiments/outputs/benchmark_novel/logs"
+
+cache:
+  type: json
+  storage:
+    type: file
+    base_dir: "../../experiments/outputs/benchmark_novel/cache"
+
+vector_store:
+  type: lancedb
+  db_uri: ../../experiments/outputs/benchmark_novel/lancedb
+
+embed_text:
+  embedding_model_id: default_embedding_model
+  batch_size: 8
+  batch_max_tokens: 2048
+
+extract_graph:
+  completion_model_id: default_completion_model
+  prompt: "../enron_s0/prompts/extract_graph.txt"
+  entity_types: [person, organization, location, event, concept, work, object]
+  max_gleanings: 1
+
+summarize_descriptions:
+  completion_model_id: default_completion_model
+  prompt: "../enron_s0/prompts/summarize_descriptions.txt"
+  max_length: 500
+
+extract_graph_nlp:
+  text_analyzer:
+    extractor_type: regex_english
+
+cluster_graph:
+  max_cluster_size: 50
+
+extract_claims:
+  enabled: false
+
+community_reports:
+  completion_model_id: default_completion_model
+  graph_prompt: "../enron_s0/prompts/community_report_graph.txt"
+  text_prompt: "../enron_s0/prompts/community_report_text.txt"
+  max_length: 2000
+  max_input_length: 8000
+
+snapshots:
+  graphml: false
+  embeddings: false
+
+local_search:
+  completion_model_id: default_completion_model
+  embedding_model_id: default_embedding_model
+  prompt: "../enron_s0/prompts/local_search_system_prompt.txt"
+
+global_search:
+  completion_model_id: default_completion_model
+  map_prompt: "../enron_s0/prompts/global_search_map_system_prompt.txt"
+  reduce_prompt: "../enron_s0/prompts/global_search_reduce_system_prompt.txt"
+  knowledge_prompt: "../enron_s0/prompts/global_search_knowledge_system_prompt.txt"
+
+drift_search:
+  completion_model_id: default_completion_model
+  embedding_model_id: default_embedding_model
+  prompt: "../enron_s0/prompts/drift_search_system_prompt.txt"
+  reduce_prompt: "../enron_s0/prompts/drift_search_reduce_prompt.txt"
+
+basic_search:
+  completion_model_id: default_completion_model
+  embedding_model_id: default_embedding_model
+  prompt: "../enron_s0/prompts/basic_search_system_prompt.txt"

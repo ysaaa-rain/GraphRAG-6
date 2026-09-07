@@ -149,7 +149,7 @@ def main() -> None:
         "top_k": args.top_k,
         "max_tokens": args.max_tokens,
         "completion_model": None if args.retrieval_only else completion_model,
-        "thinking_mode": None if args.retrieval_only else "enabled",
+        "thinking_mode": None if args.retrieval_only else "disabled",
         "config_hash": config_hash(
             {
                 "embedding_model": embedding_model,
@@ -158,7 +158,7 @@ def main() -> None:
                 "top_k": str(args.top_k),
                 "max_tokens": str(args.max_tokens),
                 "completion_model": completion_model,
-                "thinking_mode": "enabled",
+                "thinking_mode": "disabled",
             }
         ),
     }
@@ -185,7 +185,7 @@ def main() -> None:
                     response = completion_client.chat.completions.create(
                         model=completion_model,
                         max_tokens=args.max_tokens,
-                        extra_body={"thinking": {"type": "enabled"}},
+                        extra_body={"thinking": {"type": "disabled"}},
                         messages=[
                             {"role": "system", "content": SYSTEM_PROMPT},
                             {
