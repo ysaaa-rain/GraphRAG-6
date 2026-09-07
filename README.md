@@ -17,7 +17,8 @@
 - 已导入一个高 Star GraphRAG 工程作为可运行基线，并固定基线 commit。
 - 已将正式评测范围收敛为 GraphRAG-Bench Novel、GraphRAG-Bench Medical 和 Enron Email 一个实际应用场景。
 - Enron Email 使用大规模开放邮件语料，设计 20–30 道跨邮件自建问题，并选取 3–5 个代表性案例做可解释展示；《红楼梦》不再作为最终应用主线。
-- 当前尚未修改基线核心算法，正在先完成评测协议、S0 数据、最小问答链路和实现意向确认；之后再建立 Vector 基线并进行 GraphRAG 对照。
+- 已完成 Enron S0（30 封邮件）的导入、GraphRAG 建库、Qwen 本地向量化和一次 Local 查询；当前结果只证明最小链路可运行，不代表 GraphRAG 已优于 Vector RAG。
+- 已记录 DeepSeek V4 Flash 的 JSON-object 兼容适配、Qwen 模型 revision、向量维度和本机 MPS 运行配置；下一步转入正式问题集、Vector 基线和公平对照。
 
 ## 文档入口
 
@@ -31,6 +32,7 @@
 - [Enron 实际应用方案](docs/实际应用领域方案.md)
 - [协作与质量规范](docs/协作与质量规范.md)
 - [阶段变更记录](docs/变更记录.md)
+- [实验记录](docs/实验记录.md)
 - [老师原始课件](docs/参考资料/课程要求.pptx)
 - [总评评分标准截图](docs/参考资料/评分标准-总评.jpg)
 - [阶段 1 评分标准截图](docs/参考资料/阶段1评分标准.jpg)

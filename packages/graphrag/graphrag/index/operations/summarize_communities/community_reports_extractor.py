@@ -81,10 +81,14 @@ class CommunityReportsExtractor:
             })
             response = await self._model.completion_async(
                 messages=prompt,
-                response_format=CommunityReportResponse,  # A model is required when using json mode
+                # DeepSeek V4 Flash currently accepts JSON-object mode but
+                # rejects provider-side JSON Schema response formats. Ask for
+                # a JSON object and validate it locally against the same
+                # Pydantic model so the downstream table shape stays stable.
+                response_format_json_object=True,
             )
 
-            output = response.formatted_response  # type: ignore
+            output = CommunityReportResponse.model_validate_json(response.content)
         except Exception as e:
             logger.exception("error generating community report")
             self._on_error(e, traceback.format_exc(), None)
