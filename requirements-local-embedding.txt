@@ -1,0 +1,6 @@
+# Local Qwen3-Embedding service used by the formal Vector/Graph/Hybrid runs.
+# The service is intentionally separate from the upstream GraphRAG package
+# dependencies so the baseline can be updated without silently changing the
+# embedding model used to build or query an index.
+sentence-transformers>=5,<6
+uvicorn>=0.30,<1
