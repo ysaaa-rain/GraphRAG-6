@@ -1,7 +1,0 @@
-{
-  "subset": "novel",
-  "source": "data/raw/benchmarks/GraphRAG-Benchmark/Datasets/Corpus/novel.json",
-  "document_count": 20,
-  "output": "data/processed/benchmark/novel/documents.jsonl",
-  "character_count": 4819610
-}

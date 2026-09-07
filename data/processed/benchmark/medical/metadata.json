@@ -1,7 +1,0 @@
-{
-  "subset": "medical",
-  "source": "data/raw/benchmarks/GraphRAG-Benchmark/Datasets/Corpus/medical.json",
-  "document_count": 1,
-  "output": "data/processed/benchmark/medical/documents.jsonl",
-  "character_count": 1052159
-}
