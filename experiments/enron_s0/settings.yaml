@@ -48,21 +48,21 @@ input_storage:
 
 output_storage:
   type: file # [file, blob, cosmosdb]
-  base_dir: "output"
+  base_dir: "../../experiments/outputs/enron_s0/output"
 
 reporting:
   type: file # [file, blob]
-  base_dir: "logs"
+  base_dir: "../../experiments/outputs/enron_s0/logs"
 
 cache:
   type: json # [json, memory, none]
   storage:
     type: file # [file, blob, cosmosdb]
-    base_dir: "cache"
+    base_dir: "../../experiments/outputs/enron_s0/cache"
     
 vector_store:
   type: lancedb
-  db_uri: output/lancedb
+  db_uri: ../../experiments/outputs/enron_s0/lancedb
 
 ### Workflow settings ###
 
