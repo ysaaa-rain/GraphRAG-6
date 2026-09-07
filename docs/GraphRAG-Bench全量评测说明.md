@@ -172,7 +172,7 @@ experiments/outputs/
     └── graphrag_local_summary.json
 ```
 
-原始语料、索引、缓存和评测输出属于本地运行产物，不进入 Git；代码、配置、数据来源说明、运行命令和汇总结果说明进入 Git。
+为便于小组成员直接复现实验，当前仓库已同步 GraphRAG-Bench 的官方数据文件和官方评测源码，位置为 `data/raw/benchmarks/GraphRAG-Benchmark/`。这些是固定的、对评测有直接用途的项目输入，不应由成员随意修改。GraphRAG 运行产生的索引、向量库、缓存、日志、完整问答输出和 Enron 原始压缩包仍属于本地运行产物，按 `.gitignore` 规则不进入 Git；代码、配置、数据来源说明、运行命令和汇总结果说明进入 Git。
 
 每条问答结果至少保留：
 
