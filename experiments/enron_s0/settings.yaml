@@ -24,6 +24,11 @@ embedding_models:
     retry:
       type: exponential_backoff
 
+# The local Qwen service runs on CPU/MPS in the cross-platform baseline. Keep
+# requests serial and bounded so several large batches do not compete for the
+# same machine resources.
+concurrent_requests: 1
+
 ### Document processing settings ###
 
 input:
@@ -68,6 +73,8 @@ vector_store:
 
 embed_text:
   embedding_model_id: default_embedding_model
+  batch_size: 4
+  batch_max_tokens: 2048
 
 extract_graph:
   completion_model_id: default_completion_model
@@ -85,7 +92,9 @@ extract_graph_nlp:
     extractor_type: regex_english # [regex_english, syntactic_parser, cfg]
 
 cluster_graph:
-  max_cluster_size: 10
+  # S0 is a small pipeline smoke test. A larger cluster cap avoids creating
+  # dozens of tiny community-report requests before the first query works.
+  max_cluster_size: 50
 
 extract_claims:
   enabled: false
