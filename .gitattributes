@@ -9,3 +9,4 @@
 *.lock
 CODEOWNERS text eol=lf
 LICENSE text eol=lf
+data/raw/enron/source/enron_mail_20150507.tar.gz filter=lfs diff=lfs merge=lfs -text

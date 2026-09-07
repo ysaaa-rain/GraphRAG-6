@@ -13,7 +13,14 @@
 | Novel | 2010 | 20 篇文档，约 481.96 万字符 | Fact Retrieval、Complex Reasoning、Contextual Summarize、Creative Generation |
 | Medical | 2062 | 1 个医学语料对象，约 105.22 万字符 | Fact Retrieval、Complex Reasoning、Contextual Summarize、Creative Generation |
 
-官方题目文件中已经提供 `id`、题目、参考答案、题型和证据字段。本项目不修改官方题目、答案和证据，以保证结果可复现。
+官方题型数量核对结果：
+
+| 子集 | Fact Retrieval | Complex Reasoning | Contextual Summarize | Creative Generation | 合计 |
+|---|---:|---:|---:|---:|---:|
+| Novel | 971 | 610 | 362 | 67 | 2010 |
+| Medical | 1098 | 509 | 289 | 166 | 2062 |
+
+官方题目文件中已经提供 `id`、题目、参考答案、题型和证据字段。本项目不修改官方题目、答案和证据，以保证结果可复现。Novel 还提供 `evidence_triple`，Medical 还提供 `evidence_relations`；这些字段作为证据结构信息保留在原始官方输入中。
 
 官方基准仓库固定版本：
 
