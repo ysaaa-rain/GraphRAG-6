@@ -77,6 +77,7 @@ DeepSeek V4 Flash 生成答案
 - GraphRAG-Bench 官方评测依赖与主项目存在版本约束差异，官方指标脚本使用独立环境 `.venv-benchmark` 运行，避免改变主项目运行环境。
 - 两个环境均通过项目根目录的 `.env` 读取 API 配置；`.env` 已加入 `.gitignore`，不得提交或在日志中打印密钥。
 - 评测明细和汇总文件写入 `experiments/outputs/`，该目录属于运行产物，不提交 Git。
+- 建库和查询使用 MPS；评测长文本语义请求触发 macOS Metal 原生崩溃后，评测服务临时改用 CPU。评测仍固定使用同一 Qwen 模型、revision、1024 维和未归一化设置；设备差异作为运行环境异常记录，不改变已完成的建库和查询结果。
 
 ## 4. 官方指标
 
@@ -233,7 +234,7 @@ experiments/outputs/
 - [ ] Medical generation 评测
 - [ ] Medical retrieval 评测
 
-Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。Medical 全量 Local Search 已完成 2,062 道，全部返回成功状态、非空答案和检索上下文；generation 官方评测正在运行，使用独立 `.venv-benchmark` 环境并按成功 checkpoint 断点续跑。
+Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。Medical 全量 Local Search 已完成 2,062 道，全部返回成功状态、非空答案和检索上下文；generation 官方评测正在运行，使用独立 `.venv-benchmark` 环境并按成功 checkpoint 断点续跑。当前评测阶段使用 CPU Embedding 服务以规避 MPS 长文本崩溃，模型和向量参数保持不变。
 - [ ] Novel GraphRAG 建库
 - [ ] 全量生成答案
 - [ ] 全量生成、检索、索引评测
