@@ -231,15 +231,15 @@ experiments/outputs/
 - [x] 编写基于官方指标实现的断点评测脚本
 - [x] Medical GraphRAG 建库
 - [x] Medical 全量 GraphRAG 查询（2062/2062，全部成功）
-- [ ] Medical generation 评测
+- [ ] Medical generation 评测（进行中，使用成功 checkpoint 断点续跑）
 - [ ] Medical retrieval 评测
 
 Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。Medical 全量 Local Search 已完成 2,062 道，全部返回成功状态、非空答案和检索上下文；generation 官方评测正在运行，使用独立 `.venv-benchmark` 环境并按成功 checkpoint 断点续跑。当前评测阶段使用 CPU Embedding 服务以规避 MPS 长文本崩溃，模型和向量参数保持不变。
-- [ ] Novel GraphRAG 建库
+- [ ] Novel GraphRAG 建库（待 Medical generation/retrieval 完成后开始）
 - [ ] 全量生成答案
 - [ ] 全量生成、检索、索引评测
 - [ ] Vector baseline 对照
 
 ## 9. 下一步
 
-Medical 查询已完成，当前先运行其 generation/retrieval 官方评测并保留断点文件；之后进入 Novel 建库、索引指标、全量 Local Search 查询及 generation/retrieval 官方评测。每个阶段均保留可恢复的明细文件与汇总文件。
+Medical 查询已完成，当前先运行其 generation/retrieval 官方评测并保留断点文件；generation 当前正在运行，完成后继续 retrieval。之后进入 Novel 建库、索引指标、全量 Local Search 查询及 generation/retrieval 官方评测。每个阶段均保留可恢复的明细文件与汇总文件。

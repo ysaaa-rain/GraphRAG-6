@@ -17,9 +17,10 @@
 - 已导入一个高 Star GraphRAG 工程作为可运行基线，并固定基线 commit。
 - 已将正式评测范围收敛为 GraphRAG-Bench Novel、GraphRAG-Bench Medical 和 Enron Email 一个实际应用场景。
 - Enron Email 使用大规模开放邮件语料，设计 20–30 道跨邮件自建问题，并选取 3–5 个代表性案例做可解释展示；《红楼梦》不再作为最终应用主线。
-- 已完成 Enron S0（30 封邮件）的导入、GraphRAG 建库、Qwen 本地向量化和一次 Local 查询；当前结果只证明最小链路可运行，不代表 GraphRAG 已优于 Vector RAG。
-- 已建立 Enron S0 六类 12 题固定 pilot，并完成 Vector-only 召回与答案生成入口；当前结果是基线记录，不是 Vector 与 GraphRAG 的效果结论。
-- 已记录 DeepSeek V4 Flash 的 JSON-object 兼容适配、Qwen 模型 revision、向量维度和本机 MPS 运行配置；下一步运行 GraphRAG Local 和 Hybrid 的同题对照。
+- 已完成 517,401 封 Enron 邮件的统一预处理和文件夹级审计；正式建库不使用 517,401 封全量，而使用已确定的 66 封 California Power Crisis 受控分母（两个原始文件夹：20+46 封）。
+- Enron 已对这 66 封邮件生成 GraphRAG 的核心中间表，但上一轮日志停在 embedding 阶段且没有最终完成标记，当前没有检测到仍在运行的索引进程；因此建库仍待恢复/验收。尚未完成 Vector baseline，也尚未产生 Enron 的 Graph/Vector 实测结论。CA01 是主展示题，CC01、CC02、CC03 是同一分母下的辅助展示候选。
+- Medical GraphRAG 建库和 2,062 道查询已完成，官方 generation 评测正在运行；完成后还需 retrieval 评测。Novel 尚未进入正式全量运行。
+- 已记录 DeepSeek V4 Flash 的 JSON-object 兼容适配、Qwen 模型 revision、向量维度和本机 MPS/CPU 稳定性配置；完整当前状态和组员展示交接见[项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)。
 
 ## 文档入口
 
@@ -31,9 +32,9 @@
 - [阶段计划与执行清单](docs/阶段计划与执行清单.md)
 - [开放数据资产清单](docs/数据资产清单.md)
 - [Enron 实际应用方案](docs/实际应用领域方案.md)
+- [项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)
 - [协作与质量规范](docs/协作与质量规范.md)
 - [阶段变更记录](docs/变更记录.md)
-- [实验记录](docs/实验记录.md)
 - [老师原始课件](docs/参考资料/课程要求.pptx)
 - [总评评分标准截图](docs/参考资料/评分标准-总评.jpg)
 - [阶段 1 评分标准截图](docs/参考资料/阶段1评分标准.jpg)
