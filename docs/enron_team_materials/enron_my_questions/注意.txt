@@ -1,0 +1,7 @@
+文件	状态
+questions_zh.jsonl	E1(multi_hop, 高预期) + K1(graph_limited, 低预期)；含 9 必备字段 + evidence_quotes + E1 的 answer_elements(7 组判分清单) + gold_path；校验 0 错误
+questions_en.jsonl	同题英文版，跑检索推荐用；同样 0 错误
+README.md
+设计哲学 + 逐题理由 + 判分表 + 跑完怎么解释 + 合并提示（无过期引用）
+build.js
+生成脚本，改题后可重跑
