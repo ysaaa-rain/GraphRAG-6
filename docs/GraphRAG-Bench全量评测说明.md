@@ -71,6 +71,13 @@ DeepSeek V4 Flash 生成答案
 
 本阶段先得到可复现的 GraphRAG 结果。它不能单独证明 Graph 优于 Vector；后续必须在相同语料、相同题目、相同 DeepSeek 和相同 Qwen 配置下补跑 Vector baseline，再进行配对比较。
 
+### 3.4 评测运行环境
+
+- 主项目运行环境为 `.venv`，用于 GraphRAG 建库、查询和本地 Embedding 服务。
+- GraphRAG-Bench 官方评测依赖与主项目存在版本约束差异，官方指标脚本使用独立环境 `.venv-benchmark` 运行，避免改变主项目运行环境。
+- 两个环境均通过项目根目录的 `.env` 读取 API 配置；`.env` 已加入 `.gitignore`，不得提交或在日志中打印密钥。
+- 评测明细和汇总文件写入 `experiments/outputs/`，该目录属于运行产物，不提交 Git。
+
 ## 4. 官方指标
 
 ### 4.1 生成质量
@@ -222,8 +229,11 @@ experiments/outputs/
 - [x] 编写全量 GraphRAG 查询脚本
 - [x] 编写基于官方指标实现的断点评测脚本
 - [x] Medical GraphRAG 建库
+- [x] Medical 全量 GraphRAG 查询（2062/2062，全部成功）
+- [ ] Medical generation 评测
+- [ ] Medical retrieval 评测
 
-Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。
+Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。Medical 全量 Local Search 已完成 2,062 道，全部返回成功状态、非空答案和检索上下文；generation/retrieval 评测正在启动阶段。
 - [ ] Novel GraphRAG 建库
 - [ ] 全量生成答案
 - [ ] 全量生成、检索、索引评测
@@ -231,4 +241,4 @@ Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文
 
 ## 9. 下一步
 
-等待两个语料的 GraphRAG 索引完成后，先计算索引指标，再按子集运行全量 Local Search 查询。查询结果完成后分别运行 generation 和 retrieval 评测，并在每个阶段保留可恢复的明细文件与汇总文件。
+Medical 查询已完成，当前先运行其 generation/retrieval 官方评测并保留断点文件；之后进入 Novel 建库、索引指标、全量 Local Search 查询及 generation/retrieval 官方评测。每个阶段均保留可恢复的明细文件与汇总文件。

@@ -19,6 +19,7 @@ output/lancedb
 .DS_Store
 *.log*
 .venv
+.venv-benchmark/
 venv/
 .conda
 .tmp
