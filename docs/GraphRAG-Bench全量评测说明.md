@@ -44,6 +44,10 @@
 - 模型：本地 `Qwen/Qwen3-Embedding-0.6B`
 - 建库和查询使用同一模型、同一服务地址、同一维度和同一归一化配置
 - 评测中的语义相似度也调用同一套本地 Qwen embedding 服务，不切换为官方脚本默认的 BGE 模型
+- 当前本机服务执行设备：Apple Silicon `mps`
+- 为避免 macOS Metal 并发断言，当前正式运行将 `concurrent_requests` 固定为 `1`
+- GraphRAG embedding 批量参数：`batch_size=32`、`batch_max_tokens=2048`
+- 上述批量参数只影响请求分批方式，不改变模型、向量维度、归一化和输入文本；建库、查询与语义评测仍使用同一套 embedding 配置
 
 ### 3.3 首个 GraphRAG 方法
 
@@ -217,7 +221,9 @@ experiments/outputs/
 - [x] 转换 Novel/Medical 输入数据
 - [x] 编写全量 GraphRAG 查询脚本
 - [x] 编写基于官方指标实现的断点评测脚本
-- [ ] Medical GraphRAG 建库
+- [x] Medical GraphRAG 建库
+
+Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。
 - [ ] Novel GraphRAG 建库
 - [ ] 全量生成答案
 - [ ] 全量生成、检索、索引评测

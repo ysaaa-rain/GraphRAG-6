@@ -55,7 +55,7 @@ async def load_engine(root: Path, community_level: int, response_type: str):
     async def read(name: str):
         return await getattr(reader, name)()
 
-    communities, reports, text_units, relationships, entities = await asyncio.gather(
+    communities, community_reports, text_units, relationships, entities = await asyncio.gather(
         read("communities"),
         read("community_reports"),
         read("text_units"),
@@ -199,6 +199,12 @@ def main() -> None:
         default="Answer the question with concise evidence-grounded reasoning.",
     )
     args = parser.parse_args()
+    # load_config may change the working directory to the experiment root;
+    # resolve all user-facing paths first so checkpoints stay in the project
+    # output directory rather than being nested under the experiment root.
+    args.root = args.root.resolve()
+    args.questions = args.questions.resolve()
+    args.output = args.output.resolve()
     asyncio.run(main_async(args))
 
 
