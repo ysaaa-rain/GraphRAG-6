@@ -183,7 +183,13 @@ def summarize(records: list[dict[str, Any]], kind: str) -> dict[str, Any]:
         }
         for metric in metric_names:
             summary[metric] = finite_mean(
-                [float(row["metrics"][metric]) for row in group if metric in row.get("metrics", {})]
+                [
+                    float(row["metrics"][metric])
+                    for row in group
+                    if metric in row.get("metrics", {})
+                    and isinstance(row["metrics"][metric], (int, float))
+                    and math.isfinite(float(row["metrics"][metric]))
+                ]
             )
         return summary
 
@@ -229,7 +235,11 @@ async def run(args: argparse.Namespace) -> None:
         }
         try:
             async with semaphore:
-                base["metrics"] = await calculate_metrics(item, args.kind, llm, embeddings)
+                raw_metrics = await calculate_metrics(item, args.kind, llm, embeddings)
+                base["metrics"] = {
+                    name: value if math.isfinite(value) else None
+                    for name, value in raw_metrics.items()
+                }
         except Exception as exc:  # noqa: BLE001 - 每题保留错误并继续全量任务
             base["status"] = "error"
             base["error"] = f"{type(exc).__name__}: {exc}"
