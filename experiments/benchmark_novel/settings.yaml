@@ -23,7 +23,7 @@ embedding_models:
     retry:
       type: exponential_backoff
 
-concurrent_requests: 2
+concurrent_requests: 1
 
 input:
   type: jsonl
@@ -61,7 +61,7 @@ vector_store:
 
 embed_text:
   embedding_model_id: default_embedding_model
-  batch_size: 8
+  batch_size: 32
   batch_max_tokens: 2048
 
 extract_graph:
