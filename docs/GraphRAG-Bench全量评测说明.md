@@ -236,6 +236,18 @@ experiments/outputs/
 - [x] Medical retrieval 评测（2062/2062，全部成功）
 
 Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。Medical 全量 Local Search 已完成 2,062 道，全部返回成功状态、非空答案和检索上下文；generation 和 retrieval 官方评测均已完成 2,062/2,062，汇总文件已生成。当前评测阶段使用 CPU Embedding 服务以规避 MPS 长文本崩溃，模型和向量参数保持不变。
+
+Medical 官方评测汇总如下，数值直接来自被忽略的运行产物，不作为 Vector 与 GraphRAG 的最终优劣结论：
+
+| 题型 | 题数 | Answer Correctness | ROUGE-L | Coverage | Faithfulness | Context Relevancy | Evidence Recall |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Fact Retrieval | 1098 | 0.393663 | 0.085248 | — | — | 0.711022 | 0.621684 |
+| Complex Reasoning | 509 | 0.368697 | 0.073823 | — | — | 0.659824 | 0.581388 |
+| Contextual Summarize | 289 | 0.302132 | — | 0.635169 | — | 0.640138 | 0.527771 |
+| Creative Generation | 166 | 0.252318 | — | 0.374585 | 0.315056 | 0.432229 | 0.310912 |
+| 全部题型 | 2062 | 0.363293 | 0.081630 | 0.540099 | 0.315056 | 0.662225 | 0.568109 |
+
+工程运行统计：2,062 道均返回非空答案；查询阶段平均延迟 4.735 秒/题；记录到的 prompt token 合计 19,681,955，output token 合计 1,127,033。generation/retrieval 指标中的不可计算项以 `null` 保存，汇总均值跳过这些项。
 - [ ] Novel GraphRAG 建库（首次调用 DeepSeek 时因账户余额不足中止）
 - [ ] 全量生成答案
 - [ ] 全量生成、检索、索引评测
