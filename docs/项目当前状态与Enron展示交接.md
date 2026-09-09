@@ -1,6 +1,6 @@
 # 项目当前状态与 Enron 展示交接
 
-> 更新日期：2026-09-08
+> 更新日期：2026-09-09
 >
 > 用途：给组员准备结果展示，统一记录已经确认的范围、真实实验进度、Enron 代表性问题和运行后的结论填写方式。
 
@@ -16,8 +16,8 @@
 | Enron GraphRAG 建库 | 部分产物已生成，待恢复/验收 | 上一轮运行的是这 66 封，不是 30 封 S0，也不是 517,401 封全量；核心表和部分向量目录已生成，但日志停在 embedding 阶段，没有最终完成标记，当前未检测到仍在运行的索引进程。 |
 | Enron Vector baseline | 待 GraphRAG 索引完成后运行 | 必须使用同一 66 封、同一切分、同一 Qwen embedding、同一 DeepSeek 和相同回答协议。 |
 | Enron 代表性问题 | 已选定 | 主问题 CA01，辅以 CC01、CC02、CC03；共 4 题，最后可按运行时间和结果选择 3–4 题展示。 |
-| Medical benchmark | GraphRAG 建库和 2,062 题查询已完成；generation 评测运行中 | generation 使用独立 `.venv-benchmark`，沿成功 checkpoint 断点续跑；完成后还要运行 retrieval 评测。 |
-| Novel benchmark | 待开始 | Medical 当前阶段结束后进入 Novel。 |
+| Medical benchmark | GraphRAG 建库、2,062 题查询、generation 和 retrieval 评测均已完成 | 两类评测均完成 2,062/2,062；retrieval 有部分指标因官方评审输出不可解析而保存为 null，不影响整题完成状态。 |
+| Novel benchmark | 已暂停，等待 DeepSeek 额度恢复 | 首次建库请求返回 Insufficient Balance，没有产生有效索引；当前不自动重试。 |
 | 最终展示 | 正在准备材料 | 现在可以准备问题、参考答案、检索上下文和展示版式；Graph/Vector 的胜负要等实际运行结果。 |
 
 ## 2. 已经做出的固定决策
@@ -90,9 +90,10 @@ data/processed/enron/california_crisis_66/documents.jsonl
 ### 4.2 Medical benchmark
 
 - Medical GraphRAG 结构化索引已完成，Local Search 查询已完成 2,062/2,062，全部返回非空答案和检索上下文。
-- 已生成索引结构指标；generation 官方评测正在运行，并使用成功 checkpoint 断点续跑。
+- 已生成索引结构指标；generation 官方评测已完成 2,062/2,062，所有题目状态为成功。
 - 由于 MPS 长文本语义评测曾触发本地服务原生退出，当前 generation 评测使用 CPU embedding、并发 1；模型、revision、维度和归一化参数不变。
-- generation 完成后运行 retrieval，再汇总四种官方题型；在官方评测结束前不要写 Medical 最终分数。
+- retrieval 官方评测也已完成 2,062/2,062，所有题目状态为成功；Complex Reasoning 和 Fact Retrieval 各有 168 道题的两项 retrieval 指标保存为 null，汇总均值跳过这些不可计算值。
+- Medical 当前基线汇总：Answer Correctness 0.363293、ROUGE-L 0.081630、Coverage 0.540099、Faithfulness 0.315056、Context Relevancy 0.662225、Evidence Recall 0.568109。该结果仍不是 Vector 与 GraphRAG 的优劣结论。
 
 ## 5. 组员结果展示所需内容
 
@@ -138,7 +139,7 @@ GraphRAG：实体、关系/子图、检索到的 source path、答案、引用
 
 - Enron 还没有完成 Vector baseline，因此还没有 GraphRAG 对 Vector RAG 的实测优劣结论。
 - Enron 当前不是 517,401 封全量建库，而是 66 封受控分母建库；汇报时必须明确这一点。
-- Medical 的 generation/retrieval 指标尚未全部结束，不能只展示已完成的查询数量就宣称 benchmark 完成。
+- Medical 的 GraphRAG 基线建库、查询、generation 和 retrieval 已全部完成；但 retrieval 中的 null 指标需要在最终汇报中说明，不能把它们解释成 0 分。
 - CA01 的“GraphRAG 预计更强”是问题设计假设，不是实验事实；如果 Vector 召回足够完整，必须如实报告两者接近。
 
 ## 7. 交接后最短路径
@@ -147,7 +148,7 @@ GraphRAG：实体、关系/子图、检索到的 source path、答案、引用
 2. 先用 `questions_CA01.jsonl` 运行 CA01，再用 `questions.jsonl` 运行 CC01、CC02、CC03 的 GraphRAG 与 Vector 对照。
 3. 对每题保存答案、上下文、source path、证据召回、延迟和 token。
 4. 按“主案例 + 关系链补充 + 图帮助有限/持平案例”制作展示页。
-5. Medical generation 完成后运行 retrieval，最后再处理 Novel 和整体汇报归档。
+5. 归档 Medical 完整结果和 retrieval null 指标说明；额度恢复后再处理 Novel，最后进行 Vector/Graph 对照和整体汇报归档。
 
 相关文档：
 

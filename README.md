@@ -19,7 +19,7 @@
 - Enron Email 使用大规模开放邮件语料，设计 20–30 道跨邮件自建问题，并选取 3–5 个代表性案例做可解释展示；《红楼梦》不再作为最终应用主线。
 - 已完成 517,401 封 Enron 邮件的统一预处理和文件夹级审计；正式建库不使用 517,401 封全量，而使用已确定的 66 封 California Power Crisis 受控分母（两个原始文件夹：20+46 封）。
 - Enron 已对这 66 封邮件生成 GraphRAG 的核心中间表，但上一轮日志停在 embedding 阶段且没有最终完成标记，当前没有检测到仍在运行的索引进程；因此建库仍待恢复/验收。尚未完成 Vector baseline，也尚未产生 Enron 的 Graph/Vector 实测结论。CA01 是主展示题，CC01、CC02、CC03 是同一分母下的辅助展示候选。
-- Medical GraphRAG 建库和 2,062 道查询已完成，官方 generation 评测正在运行；完成后还需 retrieval 评测。Novel 尚未进入正式全量运行。
+- Medical GraphRAG 建库、2,062 道查询、官方 generation 和 retrieval 评测均已完成；retrieval 个别题目的单项指标为 null，详见评测说明。Novel 已暂停，等待 DeepSeek 额度恢复。
 - 已记录 DeepSeek V4 Flash 的 JSON-object 兼容适配、Qwen 模型 revision、向量维度和本机 MPS/CPU 稳定性配置；完整当前状态和组员展示交接见[项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)。
 
 ## 文档入口
