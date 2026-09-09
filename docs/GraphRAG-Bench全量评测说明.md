@@ -122,6 +122,8 @@ DeepSeek V4 Flash 生成答案
 - 总 prompt token、总 output token（接口返回时）
 - 运行配置、代码版本、benchmark commit、数据文件哈希
 
+DeepSeek 的分阶段请求数和 token 统计另见[DeepSeek API 使用消耗分析](./DeepSeek%20API使用消耗分析.md)。当前查询阶段保存了逐题 token；官方 generation/retrieval 评测使用 DeepSeek 作为自动评审器，但本次结果文件没有保存服务端 usage，因此只记录题数和按源码推算的调用次数，不把推算值写成精确 token。
+
 ## 5. 官方题目的答案和标注边界
 
 ### 5.1 官方 benchmark 不需要重新出题
