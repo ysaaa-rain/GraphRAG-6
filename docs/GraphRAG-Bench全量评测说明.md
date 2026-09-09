@@ -237,7 +237,7 @@ experiments/outputs/
 - [x] Medical generation 评测（2062/2062，全部成功）
 - [x] Medical retrieval 评测（2062/2062，全部成功）
 
-Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。Medical 全量 Local Search 已完成 2,062 道，全部返回成功状态、非空答案和检索上下文；generation 和 retrieval 官方评测均已完成 2,062/2,062，汇总文件已生成。当前评测阶段使用 CPU Embedding 服务以规避 MPS 长文本崩溃，模型和向量参数保持不变。
+Medical 已完成并核验结构化索引和向量库：1 个文档、199 个文本单元、4,423 个实体、10,254 条关系、271 个社区；向量库已完成 entity description 4,423 行、community report 260 行、text unit 199 行的 embedding 写入。官方 indexing evaluator 已生成图结构指标：8,041 节点、10,254 边、最大连通分量 3,593、孤立节点 4,423、平均聚类系数 0.3881。社区报告有 260 条通过结构化 JSON 校验，少量 DeepSeek 返回 Markdown 代码围栏的报告被 GraphRAG 官方流程跳过，已作为异常记录。Medical 全量 Local Search 已完成 2,062 道，全部返回成功状态、非空答案和检索上下文；generation 和 retrieval 官方评测均已完成 2,062/2,062，所有题目状态为成功，汇总文件已生成。retrieval 明细中 Complex Reasoning 和 Fact Retrieval 各有 168 道题的两项指标为 null，原因是该题指标无法得到有效评分；汇总均值跳过这些值，不能将其解释为 0 分。当前评测阶段使用 CPU Embedding 服务以规避 MPS 长文本崩溃，模型和向量参数保持不变。
 
 Medical 官方评测汇总如下，数值直接来自被忽略的运行产物，不作为 Vector 与 GraphRAG 的最终优劣结论：
 
