@@ -10,7 +10,7 @@ from pathlib import Path
 import pandas as pd
 from graphrag.config.load_config import load_config
 from graphrag.config.models.graph_rag_config import GraphRagConfig
-from knowledge_loader.data_sources.typing import Datasource
+from knowledge_loader.data_sources.typing import Datasource, WriteMode
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("azure").setLevel(logging.WARNING)
@@ -69,3 +69,18 @@ class LocalDatasource(Datasource):
         cwd = Path(__file__).parent
         root_dir = (cwd / self._base_path).resolve()
         return load_config(root_dir=root_dir)
+
+    def write(
+        self, table: str, df: pd.DataFrame, mode: WriteMode | None = None
+    ) -> None:
+        """Write a parquet table, supporting append-only retrieval traces."""
+        path = Path(self._base_path) / f"{table}.parquet"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        output = df
+        if mode is WriteMode.Append and path.exists():
+            output = pd.concat([pd.read_parquet(path), df], ignore_index=True)
+        output.to_parquet(path, index=False)
+
+    def has_table(self, table: str) -> bool:
+        """Return whether a local parquet table exists."""
+        return (Path(self._base_path) / f"{table}.parquet").exists()

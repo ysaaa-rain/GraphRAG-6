@@ -14,7 +14,7 @@ import yaml
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient, ContainerClient
 from graphrag.config.models.graph_rag_config import GraphRagConfig
-from knowledge_loader.data_sources.typing import Datasource
+from knowledge_loader.data_sources.typing import Datasource, WriteMode
 
 from .default import blob_account_name, blob_container_name
 
@@ -123,3 +123,35 @@ class BlobDatasource(Datasource):
             return None
 
         return graphrag_config
+
+    def write(
+        self, table: str, df: pd.DataFrame, mode: WriteMode | None = None
+    ) -> None:
+        """Write a parquet table back to Blob Storage when trace persistence is enabled."""
+        if blob_account_name is None or blob_container_name is None:
+            error_message = "Blob storage is not configured"
+            raise RuntimeError(error_message)
+        output = df
+        if mode is WriteMode.Append:
+            try:
+                output = pd.concat(
+                    [self.read(table, throw_on_missing=True), df], ignore_index=True
+                )
+            except FileNotFoundError:
+                output = df
+        stream = BytesIO()
+        output.to_parquet(stream, index=False)
+        stream.seek(0)
+        _get_container(blob_account_name, blob_container_name).upload_blob(
+            f"{self._database}/{table}.parquet", stream, overwrite=True
+        )
+
+    def has_table(self, table: str) -> bool:
+        """Best-effort existence check for a blob table."""
+        try:
+            _get_container(blob_account_name, blob_container_name).get_blob_client(
+                f"{self._database}/{table}.parquet"
+            ).get_blob_properties()
+        except Exception:  # noqa: BLE001 - datasource API is a best-effort probe
+            return False
+        return True

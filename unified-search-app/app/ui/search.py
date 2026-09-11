@@ -1,6 +1,8 @@
 # Copyright (c) 2024 Microsoft Corporation.
 # Licensed under the MIT License
 
+# ruff: noqa: RUF001
+
 """Search module."""
 
 import json
@@ -95,6 +97,120 @@ def display_citations(
                             ),
                             unsafe_allow_html=True,
                         )
+
+
+def display_retrieval_trace(
+    container: DeltaGenerator | None = None, result: SearchResult | None = None
+):
+    """Display the entity -> relationship -> source trace and highlighted subgraph."""
+    if container is None or result is None or result.trace is None:
+        return
+    trace = result.trace
+    with container:
+        st.markdown("### Graph 路径与证据链")
+        st.caption(
+            "所有字段同时写入 output/retrieval_traces.parquet；路径召回率只有在提供 gold path 后才计算。"
+        )
+        chain_rows = [
+            {
+                "source_path": evidence.get("source_path", ""),
+                "text_unit_id": evidence.get(
+                    "id", evidence.get("human_readable_id", "")
+                ),
+                "entity_ids": evidence.get("entity_ids", []),
+                "relationship_ids": evidence.get("relationship_ids", []),
+                "text": evidence.get("text", ""),
+                "retrieval_score": evidence.get("retrieval_score", ""),
+            }
+            for evidence in trace.text_evidence
+        ]
+        if chain_rows:
+            st.dataframe(
+                pd.DataFrame(chain_rows),
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "text": st.column_config.TextColumn("文本证据", width="large"),
+                    "source_path": st.column_config.TextColumn(
+                        "来源路径", width="medium"
+                    ),
+                },
+            )
+        else:
+            st.info("当前方法没有返回文本证据行。")
+
+        with st.expander("查看命中实体、关系与路径字段", expanded=False):
+            st.json({
+                "method": trace.method,
+                "matched_entity_ids": trace.matched_entity_ids,
+                "matched_relationship_ids": trace.matched_relationship_ids,
+                "graph_paths": trace.graph_paths,
+                "retrieved_source_paths": trace.retrieved_source_paths,
+                "path_recall": trace.path_recall,
+                "path_recall_numerator": trace.path_recall_numerator,
+                "path_recall_denominator": trace.path_recall_denominator,
+                "evidence_recall": trace.evidence_recall,
+                "evidence_recall_numerator": trace.evidence_recall_numerator,
+                "evidence_recall_denominator": trace.evidence_recall_denominator,
+                "channel_scores": trace.channel_scores,
+            })
+
+        dot = _trace_to_dot(trace)
+        if dot:
+            with st.expander("查看可视化子图（红色边/节点为路径高亮）", expanded=True):
+                st.graphviz_chart(dot, use_container_width=True)
+
+
+def _trace_to_dot(trace) -> str:
+    """Build a safe Graphviz diagram from the persisted subgraph fields."""
+    if not trace.subgraph_nodes:
+        return ""
+
+    def quote(value: str) -> str:
+        return str(value).replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ")
+
+    highlighted_edges = {
+        relationship_id
+        for path in trace.graph_paths
+        for relationship_id in path.get("relationship_ids", [])
+    }
+    highlighted_nodes = {
+        entity_id
+        for path in trace.graph_paths
+        for entity_id in path.get("entity_ids", [])
+    }
+    lines = [
+        "digraph G {",
+        'graph [rankdir=LR, bgcolor="transparent", pad="0.2"];',
+        'node [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=10];',
+        'edge [fontname="Microsoft YaHei", fontsize=9, color="#9ca3af"];',
+    ]
+    for node in trace.subgraph_nodes:
+        node_id = str(node.get("id", ""))
+        if not node_id:
+            continue
+        label = str(node.get("title") or node_id)
+        color = (
+            "#fecaca" if node_id in highlighted_nodes or node.get("seed") else "#dbeafe"
+        )
+        lines.append(
+            f'"{quote(node_id)}" [label="{quote(label)}", fillcolor="{color}"];'
+        )
+    for edge in trace.subgraph_edges:
+        source = str(edge.get("source", ""))
+        target = str(edge.get("target", ""))
+        if not source or not target:
+            continue
+        edge_id = str(edge.get("id", ""))
+        label = str(edge.get("description") or edge_id)[:80]
+        color = "#dc2626" if edge_id in highlighted_edges else "#9ca3af"
+        penwidth = "2.8" if edge_id in highlighted_edges else "1.0"
+        lines.append(
+            f'"{quote(source)}" -> "{quote(target)}" '
+            f'[label="{quote(label)}", color="{color}", penwidth="{penwidth}"];'
+        )
+    lines.append("}")
+    return "\n".join(lines)
 
 
 def format_response_hyperlinks(str_response: str, search_type: str = ""):

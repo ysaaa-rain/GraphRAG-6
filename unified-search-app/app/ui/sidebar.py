@@ -1,10 +1,13 @@
 # Copyright (c) 2024 Microsoft Corporation.
 # Licensed under the MIT License
 
+# ruff: noqa: RUF001
+
 """Sidebar module."""
 
 import streamlit as st
 from app_logic import dataset_name, load_dataset
+from rag.typing import SearchMethod
 from state.session_variables import SessionVariables
 
 
@@ -70,28 +73,16 @@ def create_side_bar(sv: SessionVariables):
             max_value=100,
             step=1,
         )
-        st.subheader("Search options:")
-        st.toggle(
-            "Include basic RAG",
-            key=sv.include_basic_rag.key,
-            on_change=update_basic_rag,
-            kwargs={"sv": sv},
+        st.subheader("检索方法（可多选对照）")
+        method_values = [method.value for method in SearchMethod]
+        method_labels = {method.value: method.label for method in SearchMethod}
+        st.multiselect(
+            "选择 GraphRAG 方法",
+            options=method_values,
+            key=sv.selected_methods.key,
+            format_func=lambda value: method_labels.get(value, value),
+            help="Microsoft 方法保留原始实现；其他三项在同一 Parquet 图索引上复现对应检索思想。",
         )
-        st.toggle(
-            "Include local search",
-            key=sv.include_local_search.key,
-            on_change=update_local_search,
-            kwargs={"sv": sv},
-        )
-        st.toggle(
-            "Include global search",
-            key=sv.include_global_search.key,
-            on_change=update_global_search,
-            kwargs={"sv": sv},
-        )
-        st.toggle(
-            "Include drift search",
-            key=sv.include_drift_search.key,
-            on_change=update_drift_search,
-            kwargs={"sv": sv},
+        st.caption(
+            "自定义方法会额外保存实体、关系、图路径、子图边和文本证据；没有 gold path 时路径召回率显示为 N/A。"
         )

@@ -6,6 +6,7 @@
 from data_config import (
     default_suggested_questions,
 )
+from rag.typing import SearchMethod
 from state.query_variable import QueryVariable
 from state.session_variable import SessionVariable
 
@@ -28,11 +29,21 @@ class SessionVariables:
         self.communities = SessionVariable([])
         self.community_reports = SessionVariable([])
         self.text_units = SessionVariable([])
+        self.documents = SessionVariable([])
+        self.text_vector_store = SessionVariable()
+        self.entity_vector_store = SessionVariable()
+        self.embedding_model = SessionVariable()
+        self.completion_model = SessionVariable()
+        self.completion_model_params = SessionVariable({})
         self.question_in_progress = SessionVariable("")
         self.include_global_search = QueryVariable("include_global_search", True)
         self.include_local_search = QueryVariable("include_local_search", True)
         self.include_drift_search = QueryVariable("include_drift_search", False)
         self.include_basic_rag = QueryVariable("include_basic_rag", False)
+        self.selected_methods = SessionVariable([
+            SearchMethod.MICROSOFT_LOCAL.value,
+            SearchMethod.MICROSOFT_GLOBAL.value,
+        ])
 
         self.selected_report = SessionVariable()
         self.graph_community_level = SessionVariable(0)

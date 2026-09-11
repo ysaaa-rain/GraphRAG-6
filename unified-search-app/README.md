@@ -1,120 +1,49 @@
-# Unified Search
-Unified demo for GraphRAG search comparisons.
+# Unified Search 展示界面
 
-⚠️ This app is maintained for demo/experimental purposes and is not supported. Issue filings on the GraphRAG repo may not be addressed.
+Unified Search 是本项目的可选 Web 展示入口，用于在同一数据集上查看不同检索方式的答案、检索上下文和引用。当前界面支持 Microsoft GraphRAG 的 Global、Local、DRIFT、Basic/Vector，以及 LightRAG 风格、HippoRAG 2 风格和本项目 Hybrid Path 三种可切换方法。
 
-## Requirements:
-- Python 3.11
-- UV
-    
-This sample app is not published to pypi, so you'll need to clone the GraphRAG repo and run from this folder.
+## 依赖和运行
 
-We recommend always using a virtual environment:
+- Python 3.11–3.13
+- `graphrag==3.1.2`
+- `azure-search-documents~=12.0`
 
-- `uv venv --python 3.11`
-- `source .venv/bin/activate`
+依赖版本和锁文件位于当前目录的 `pyproject.toml` 与 `uv.lock`，与根目录的 GraphRAG 3.1.2 系统保持一致。
 
-## Run index
-Use GraphRAG to index your dataset before running Unified Search. We recommend starting with the [Getting Started guide](https://microsoft.github.io/graphrag/get_started/).
-
-## Datasets
-Unified Search supports multiple GraphRAG indexes by using a directory listing file. Create a `listing.json` file in the root folder where all your datasets are stored (locally or in blob storage), with the following format (one entry per dataset):
-
-```json
-[{
-    "key": "<key_to_identify_dataset_1>",
-    "path": "<path_to_dataset_1>",
-    "name": "<name_to_identify_dataset_1>",
-    "description": "<description_for_dataset_1>",
-    "community_level": "<integer for community level you want to filter>"
-},{
-    "key": "<key_to_identify_dataset_2>",
-    "path": "<path_to_dataset_2>",
-    "name": "<name_to_identify_dataset_2>",
-    "description": "<description_for_dataset_2>",
-    "community_level": "<integer for community level you want to filter>"
-}]
+```bash
+uv sync
+uv run poe start
 ```
 
-For example, if you have a folder of GraphRAG indexes called "projects" and inside that you ran the Getting Started instructions, your listing.json in the projects folder could look like:
+## 数据目录
+
+在数据根目录创建 `listing.json`，每个条目描述一个可查询索引：
+
 ```json
-[{
-    "key": "christmas-demo",
-    "path": "christmas",
-    "name": "A Christmas Carol",
-    "description": "Getting Started index of the novel A Christmas Carol",
+[
+  {
+    "key": "california-crisis",
+    "path": "california-crisis",
+    "name": "California Power Crisis",
+    "description": "Enron California Power Crisis 66-email index",
     "community_level": 2
-}]
+  }
+]
 ```
 
-### Data Source Configuration 
-The expected format of the projects folder will be the following:
-- projects_folder
-    - listing.json
-    - dataset_1
-        - settings.yaml
-        - .env (optional if you declare your environment variables elsewhere)
-        - output
-        - prompts
-    - dataset_2
-        - settings.yaml
-        - .env (optional if you declare your environment variables elsewhere)
-        - output
-        - prompts
-    - ...
+每个数据目录至少包含 `settings.yaml` 和 `output/`；需要本地数据时，通过 `DATA_ROOT` 指定数据根目录。Azure Blob 数据源仍可按 `BLOB_ACCOUNT_NAME` 和 `BLOB_CONTAINER_NAME` 配置，但不属于本轮 Enron 首轮对照的必需路径。
 
-Note: Any other folder inside each dataset folder will be ignored but will not affect the app. Also, only the datasets declared inside listing.json will be used for Unified Search. 
+## 界面用途
 
-## Storing your datasets
-You can host Unified Search datasets locally or in a blob.
+左侧选择数据集、问题生成数量和检索方法；右侧展示答案、引用和社区报告。课堂演示时优先使用本项目已经验收的 Enron 66 封索引。每个结果下方会显示实体—关系—文本证据链、子图和红色路径高亮，每次查询还会把完整 `RetrievalTrace` 追加到 `output/retrieval_traces.parquet`。
 
-### 1. Local data folder
-1. Create a local folder with all your data and config as described above
-2. Tell the app where your folder is using an absolute path with the following environment variable:
-- `DATA_ROOT` = `<data_folder_absolute_path>`
+## 方法选择
 
-### 2. Azure Blob Storage
-1. If you want to use Azure Blob Storage, create a blob storage account with a "data" container and upload all your data and config as described above
-2. Run `az login` and select an account that has read permissions on that storage
-3. You need to tell the app what blob account to use using the following environment variable:
-- `BLOB_ACCOUNT_NAME` = `<blob_storage_name>`
-4. (optional) In your blob account you need to create a container where your projects live. We default this to `data` as mentioned in step one, but if you want to use something else you can set:
-- `BLOB_CONTAINER_NAME` = `<blob_container_with_projects>`
+| UI 方法 | 核心机制 |
+|---|---|
+| Microsoft Local / Global / DRIFT | 直接调用当前 `graphrag==3.1.2` API |
+| LightRAG 风格 | 低层实体/关系匹配 + 高层社区报告匹配，并通过实体反向链接文本 |
+| HippoRAG 2 风格 | 实体种子 + 加权 Personalized PageRank，再整合邻域 passage |
+| Hybrid Path | BM25、已有 GraphRAG dense vector index 和受最大 hop 约束的图路径三路融合 |
 
-
-# Run the app
-
-Install all the dependencies: `uv sync`
-
-Run the project using streamlit: `uv run poe start`
-
-# How to use it
-
-![Initial page](images/image-1.png)
-
-## Configuration panel (left panel)
-When you run the app, you will see two main panels. The left panel provides several configuration options and can be closed:
-1. **Datasets**: All datasets defined in the listing.json file are shown in the dropdown.
-2. **Number of suggested questions**: This option lets you choose how many suggested questions to generate.
-3. **Search options**: This section lets you choose which searches to use in the app. At least one search must be enabled.
-
-## Searches panel (right panel)
-The right panel provides several functions.
-1. At the top you can see general information related to the chosen dataset (name and description).
-2. Below the dataset information, a button labeled "Suggest some questions" analyzes the dataset using global search and generates the number of questions set in the configuration panel. To select a generated question, click the checkbox to its left.
-3. A text box labeled "Ask a question to compare the results" lets you type the question that you want to send.
-4. Two tabs called Search and Community Explorer:
-    1. Search: All search results are displayed with their citations.
-    2. Community Explorer: This tab is divided into two sections: Community Reports List and Selected Report.
-
-##### Suggest some question clicked
-![Suggest some question clicked](images/image-2.png)
-
-##### Selected question clicked
-![Selected question clicked](images/image-3.png)
-
-##### Community Explorer tab
-![Community Explorer tab](images/image-4.png)
-
-
-
+自定义方法是针对本仓库已有 GraphRAG 输出 schema 的实现适配，不是将第三方项目直接作为依赖安装；详细原理、字段和运行边界见根目录 [GraphRAG 方法调研与系统实现细节](../docs/GraphRAG方法调研与系统实现细节.md)。
