@@ -57,6 +57,15 @@ def get_text_unit_data(dataset: str, _datasource: Datasource) -> pd.DataFrame:
 
 
 @st.cache_data(ttl=config.default_ttl)
+def get_document_data(dataset: str, _datasource: Datasource) -> pd.DataFrame:
+    """Return optional document rows used for source-path resolution."""
+    document_df = _datasource.read(config.document_table)
+    print(f"Document records: {len(document_df)}")  # noqa T201
+    print(f"Dataset: {dataset}")  # noqa T201
+    return document_df
+
+
+@st.cache_data(ttl=config.default_ttl)
 def get_community_report_data(
     _datasource: Datasource,
 ) -> pd.DataFrame:

@@ -21,6 +21,7 @@
 - Enron 已对这 66 封邮件生成 GraphRAG 的核心中间表，但上一轮日志停在 embedding 阶段且没有最终完成标记，当前没有检测到仍在运行的索引进程；因此建库仍待恢复/验收。尚未完成 Vector baseline，也尚未产生 Enron 的 Graph/Vector 实测结论。CA01 是主展示题，CC01、CC02、CC03 是同一分母下的辅助展示候选。
 - Medical GraphRAG 建库、2,062 道查询、官方 generation 和 retrieval 评测均已完成；retrieval 个别题目的单项指标为 null，详见评测说明。Novel 已暂停，等待 DeepSeek 额度恢复。
 - 已记录 DeepSeek V4 Flash 的 JSON-object 兼容适配、Qwen 模型 revision、向量维度和本机 MPS/CPU 稳定性配置；完整当前状态和组员展示交接见[项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)。
+- Unified Search 已支持七种可选检索方法，并统一保存实体、关系、图路径、子图、文本证据和 recall 字段；自定义方法与前端证据链说明见[GraphRAG 方法调研与系统实现细节](docs/GraphRAG方法调研与系统实现细节.md)。
 
 ## 文档入口
 
@@ -33,6 +34,7 @@
 - [开放数据资产清单](docs/数据资产清单.md)
 - [Enron 实际应用方案](docs/实际应用领域方案.md)
 - [项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)
+- [GraphRAG 方法调研与系统实现细节](docs/GraphRAG方法调研与系统实现细节.md)
 - [协作与质量规范](docs/协作与质量规范.md)
 - [阶段变更记录](docs/变更记录.md)
 - [老师原始课件](docs/参考资料/课程要求.pptx)

@@ -23,6 +23,12 @@ covariate_table = "output/covariates"
 # name of the table in the graph-indexed data where the text units are stored
 text_unit_table = "output/text_units"
 
+# optional document table used to map text units back to stable source paths
+document_table = "output/documents"
+
+# append-only query traces written by the selectable search methods
+retrieval_trace_table = "output/retrieval_traces"
+
 # default configurations for LLM's answer generation, used in all search types
 # this should be adjusted based on the token limits of the LLM model being used
 # The following setting is for gpt-4-1106-preview (i.e. gpt-4-turbo)

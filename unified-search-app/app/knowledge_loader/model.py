@@ -14,6 +14,7 @@ from knowledge_loader.data_prep import (
     get_communities_data,
     get_community_report_data,
     get_covariate_data,
+    get_document_data,
     get_entity_data,
     get_relationship_data,
     get_text_unit_data,
@@ -81,6 +82,7 @@ class KnowledgeModel:
     community_reports: pd.DataFrame
     communities: pd.DataFrame
     text_units: pd.DataFrame
+    documents: pd.DataFrame
     covariates: pd.DataFrame | None = None
 
 
@@ -99,6 +101,7 @@ def load_model(
     community_reports = load_community_reports(datasource)
     communities = load_communities(datasource)
     text_units = load_text_units(dataset, datasource)
+    documents = get_document_data(dataset, datasource)
 
     return KnowledgeModel(
         entities=entities,
@@ -106,5 +109,6 @@ def load_model(
         community_reports=community_reports,
         communities=communities,
         text_units=text_units,
+        documents=documents,
         covariates=(None if covariates.empty else covariates),
     )
