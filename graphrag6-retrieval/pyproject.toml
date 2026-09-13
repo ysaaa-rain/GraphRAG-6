@@ -1,0 +1,38 @@
+[project]
+name = "graphrag6-retrieval"
+version = "0.1.0"
+description = "GraphRAG-6 自定义检索算法：LightRAG 风格、HippoRAG 2 风格、Hybrid Path"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "pandas~=3.0",
+    # custom_search.py 是适配层：复用 GraphRAG 的向量库、embedding 与 completion。
+    "graphrag==3.1.2",
+    "graphrag-llm==3.1.2",
+]
+
+[dependency-groups]
+dev = ["pytest~=9.1"]
+
+[build-system]
+requires = ["hatchling>=1.27.0,<2.0.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["graphrag6_retrieval"]
+
+[tool.uv.sources]
+graphrag = { path = "../packages/graphrag", editable = true }
+graphrag-cache = { path = "../packages/graphrag-cache", editable = true }
+graphrag-chunking = { path = "../packages/graphrag-chunking", editable = true }
+graphrag-common = { path = "../packages/graphrag-common", editable = true }
+graphrag-input = { path = "../packages/graphrag-input", editable = true }
+graphrag-llm = { path = "../packages/graphrag-llm", editable = true }
+graphrag-storage = { path = "../packages/graphrag-storage", editable = true }
+graphrag-vectors = { path = "../packages/graphrag-vectors", editable = true }
+
+[[tool.uv.index]]
+url = "https://packagefeedproxy.microsoft.io/pypi/simple"
+default = true
+
+[tool.poe.tasks]
+test = "python -m unittest discover -s tests -t . -v"
