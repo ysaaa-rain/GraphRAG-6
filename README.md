@@ -10,6 +10,19 @@
 
 项目结论以实验数据为依据：如果图检索没有在某类问题上优于向量检索，也要记录原因和适用边界，不预设“GraphRAG 必然更好”。
 
+## 前端与建库（新同学从这里开始）
+
+检索界面和"从零建库到跑通"的完整步骤见 [graphrag-workbench/README.md](graphrag-workbench/README.md)。
+
+- [graphrag-workbench](graphrag-workbench/)：GraphRAG 工作台前端。建索引进度、七种检索方法对照、每个阶段的产物、证据链与子图
+- [graphrag-workbench/index-template](graphrag-workbench/index-template/)：新建索引的模板，复制即用（配置 + 13 个提示词，不需要手写 settings.yaml）
+- [graphrag6-retrieval](graphrag6-retrieval/)：本项目自己的检索算法（LightRAG 风格、HippoRAG 2 风格、Hybrid Path）
+
+两点要知道：
+
+1. **索引不在仓库里**。`experiments/outputs/` 被 `.gitignore` 忽略，因为索引是数据产物。要么照上面的快速开始自己建一份，要么把现有索引目录放在本地，用 `GRAPHRAG_INDEX` 环境变量指过去。
+2. **引擎和算法是两回事**。微软的 GraphRAG 引擎源码在 `packages/`（约 3 万行，本项目只在社区报告解析处改过 1 个文件做 DeepSeek 适配）；本项目自己的算法在 `graphrag6-retrieval/`（约 1,300 行）。
+
 ## 当前阶段
 
 - 已完成课程要求解析并归档原始课件。
