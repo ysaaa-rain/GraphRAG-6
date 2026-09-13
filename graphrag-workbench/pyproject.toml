@@ -1,0 +1,45 @@
+[project]
+name = "graphrag-workbench"
+version = "0.1.0"
+description = "GraphRAG 建索引、阶段产物与检索对照工作台"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    # 不锁死 1.43.0：那个版本要求 pandas<3，与 graphrag 3.1.2 的 pandas~=3.0 冲突。
+    # 界面只用 set_page_config/tabs/columns/multiselect/progress 等稳定 API。
+    "streamlit>=1.43",
+    # 本项目自己的检索算法（LightRAG 风格 / HippoRAG 2 风格 / Hybrid Path）
+    "graphrag6-retrieval",
+    # 前端调用的是 3.x 的 API（graphrag.api / graphrag_llm / graphrag_common），
+    # 并且读的是仓库本地 3.1.2 建出来的索引，所以依赖本地 workspace 包而不是 PyPI。
+    "graphrag==3.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest~=9.1",
+    "poethepoet~=0.48",
+]
+
+[tool.uv]
+package = false
+
+# 仓库根目录的 uv 缓存取自这个源；离线安装（--offline）必须声明它，
+# 否则 uv 会去 pypi.org 的缓存里找，什么也找不到。
+[[tool.uv.index]]
+url = "https://packagefeedproxy.microsoft.io/pypi/simple"
+default = true
+
+[tool.uv.sources]
+graphrag6-retrieval = { path = "../graphrag6-retrieval", editable = true }
+graphrag = { path = "../packages/graphrag", editable = true }
+graphrag-cache = { path = "../packages/graphrag-cache", editable = true }
+graphrag-chunking = { path = "../packages/graphrag-chunking", editable = true }
+graphrag-common = { path = "../packages/graphrag-common", editable = true }
+graphrag-input = { path = "../packages/graphrag-input", editable = true }
+graphrag-llm = { path = "../packages/graphrag-llm", editable = true }
+graphrag-storage = { path = "../packages/graphrag-storage", editable = true }
+graphrag-vectors = { path = "../packages/graphrag-vectors", editable = true }
+
+[tool.poe.tasks]
+start = "streamlit run app/main.py"
+test = "python -m unittest discover -s tests -t . -v"
