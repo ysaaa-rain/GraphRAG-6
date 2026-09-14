@@ -13,13 +13,13 @@
 | `graphrag6_retrieval/trace_store.py` | 51 | trace 追加写入 `<index>/output/retrieval_traces.parquet` |
 
 界面上可切换的三种方法就来自这里：**LightRAG 风格（低层实体/关系 + 高层社区）**、
-**HippoRAG 2 风格（实体种子 + 加权 PPR 多跳）**、**Hybrid Path（BM25 + 向量 + 图路径融合）**。
+**HippoRAG 2 风格（实体种子 + 加权 PPR 多跳）**、**PathFusionRAG（BM25 + Dense + 约束图路径融合）**。
 
 ## 代码来源（写报告时按这个说）
 
 - `retrieval.py`、`custom_search.py`、`trace_store.py`：本项目在 commit `0b8665c`
-  （2026-09-11）新增，最初放在上游演示前端目录 `unified-search-app/app/rag/` 下，
-  2026-09-13 抽成独立包（同时把 `trace_store` 从依赖旧前端的 `Datasource` 抽象改成自包含）。
+  （2026-09-11）新增，最初放在已删除的上游演示前端中，2026-09-13 抽成独立包
+  （同时把 `trace_store` 从依赖旧前端的 `Datasource` 抽象改成自包含）。
 - `typing.py`：源自上游 Microsoft 的同名文件（commit `0e1a6e3`，2025-04-07），
   由本项目扩展出 `SearchMethod` 和 `RetrievalTrace`。
 

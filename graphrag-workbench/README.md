@@ -1,20 +1,20 @@
 # GraphRAG 工作台
 
-纯前端，覆盖三件事：建索引（带阶段进度）、查看每个阶段的产物、多方法检索对照。
-原上游演示界面（`unified-search-app`）已于 2026-09-13 删除；检索算法在独立包
+项目自己的前端，覆盖三件事：建索引（带阶段进度）、查看每个阶段的产物、多方法检索对照。
+原上游演示界面（`unified-search-app`）已于 2026-09-14 删除；检索算法在独立包
 `../graphrag6-retrieval` 里，这里只做界面和编排。
 
 ## 结构
 
 ```
-app/main.py          Streamlit 界面（两个页签：建索引与阶段 / 检索对照）
+app/main.py          PathFusionRAG 自研 Streamlit 界面（方法首页 / 索引中心 / 检索对照）
 app/index_view.py    索引阶段数据层，只依赖 pandas，可脱离 streamlit 测试
 app/trace_view.py    证据链与子图渲染（把 trace 变成表格和 Graphviz DOT）
 tests/               29 个测试；算法包的测试在 ../graphrag6-retrieval/tests
 index-template/      新建索引的模板：settings.yaml + 13 个提示词，复制即用
 ```
 
-检索算法（LightRAG 风格 / HippoRAG 2 风格 / Hybrid Path）在独立包
+检索算法（LightRAG 风格 / HippoRAG 2 风格 / PathFusionRAG）在独立包
 [graphrag6-retrieval](../graphrag6-retrieval)，本目录只 import 它，不重复实现。
 
 ## 快速开始（从零到跑通）
@@ -139,6 +139,7 @@ uv run streamlit run app/main.py
 
 - **建索引与阶段**：七个阶段、行数、耗时、cache 文件数、产物表格和日志；顶部有"开始建索引"按钮
 - **检索对照**：勾方法、问问题、展开"证据链与子图"看命中实体、图路径和子图
+- **视觉工作台**：深色项目头部、索引阶段卡片、方法地图、空状态提示和证据指标卡，未输入问题时也不会出现空白页面
 - 第一次**只勾 Global**：它只用 DeepSeek 密钥。Local / DRIFT / Basic / 三个自定义方法需要第 8 步的服务一直开着
 
 ### 四、不建库，只想用现成的索引

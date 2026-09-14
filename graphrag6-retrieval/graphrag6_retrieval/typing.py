@@ -48,7 +48,7 @@ class SearchMethod(str, Enum):
             SearchMethod.MICROSOFT_BASIC: "Microsoft Basic / Vector RAG",
             SearchMethod.LIGHTRAG: "LightRAG 风格 · 双层检索",
             SearchMethod.HIPPORAG2: "HippoRAG 2 风格 · PPR 多跳",
-            SearchMethod.HYBRID_PATH: "本项目 · Hybrid Path GraphRAG",
+            SearchMethod.HYBRID_PATH: "PathFusionRAG · 约束路径融合",
         }[self]
 
     @property
