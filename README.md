@@ -16,7 +16,7 @@
 
 - [graphrag-workbench](graphrag-workbench/)：GraphRAG 工作台前端。建索引进度、七种检索方法对照、每个阶段的产物、证据链与子图
 - [graphrag-workbench/index-template](graphrag-workbench/index-template/)：新建索引的模板，复制即用（配置 + 13 个提示词，不需要手写 settings.yaml）
-- [graphrag6-retrieval](graphrag6-retrieval/)：本项目自己的检索算法（LightRAG 风格、HippoRAG 2 风格、Hybrid Path）
+- [graphrag6-retrieval](graphrag6-retrieval/)：本项目自己的检索算法（LightRAG 风格、HippoRAG 2 风格、PathFusionRAG）
 
 两点要知道：
 
@@ -26,15 +26,15 @@
 ## 当前阶段
 
 - 已完成课程要求解析并归档原始课件。
-- 已保留远程仓库原有的初始化记录。
-- 已导入一个高 Star GraphRAG 工程作为可运行基线，并固定基线 commit。
+- 已保留项目初始化记录，并固定当前系统的代码与配置版本。
 - 已将正式评测范围收敛为 GraphRAG-Bench Novel、GraphRAG-Bench Medical 和 Enron Email 一个实际应用场景。
-- Enron Email 使用大规模开放邮件语料，设计 20–30 道跨邮件自建问题，并选取 3–5 个代表性案例做可解释展示；《红楼梦》不再作为最终应用主线。
+- Enron Email 使用大规模开放邮件语料；当前冻结 3–5 道跨邮件代表性问题做可解释展示；《红楼梦》不再作为最终应用主线。
 - 已完成 517,401 封 Enron 邮件的统一预处理和文件夹级审计；正式建库不使用 517,401 封全量，而使用已确定的 66 封 California Power Crisis 受控分母（两个原始文件夹：20+46 封）。
-- Enron 已对这 66 封邮件生成 GraphRAG 的核心中间表，但上一轮日志停在 embedding 阶段且没有最终完成标记，当前没有检测到仍在运行的索引进程；因此建库仍待恢复/验收。尚未完成 Vector baseline，也尚未产生 Enron 的 Graph/Vector 实测结论。CA01 是主展示题，CC01、CC02、CC03 是同一分母下的辅助展示候选。
+- Enron 66 封索引已经完成并验收：生成 66 个 documents、71 个 text units、644 个 entities、1,374 个 relationships、37 个 communities 和 35 个 community reports；另有 1 个社区报告因控制字符未生成，已登记为限制。
+- Enron Graph/Vector 首轮对照已经完成，输出为 `comparison_CA01.json`、`comparison_CA02.json`、`comparison_CA03.json` 和 `comparison_CC_66.json`；CA01/CA03 为有限 Graph 召回优势，CA02 为 Vector 略优，不能外推为普遍结论。
 - Medical GraphRAG 建库、2,062 道查询、官方 generation 和 retrieval 评测均已完成；retrieval 个别题目的单项指标为 null，详见评测说明。Novel 已暂停，等待 DeepSeek 额度恢复。
 - 已记录 DeepSeek V4 Flash 的 JSON-object 兼容适配、Qwen 模型 revision、向量维度和本机 MPS/CPU 稳定性配置；完整当前状态和组员展示交接见[项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)。
-- Unified Search 已支持七种可选检索方法，并统一保存实体、关系、图路径、子图、文本证据和 recall 字段；自定义方法与前端证据链说明见[GraphRAG 方法调研与系统实现细节](docs/GraphRAG方法调研与系统实现细节.md)。
+- GraphRAG-6 工作台已支持七种可选检索方法，并统一保存实体、关系、图路径、子图、文本证据和 recall 字段；自定义方法与前端证据链说明见[GraphRAG 方法调研与系统实现细节](docs/GraphRAG方法调研与系统实现细节.md)。
 
 ## 文档入口
 
@@ -56,7 +56,7 @@
 
 ## 代码基线
 
-基线代码已经放在本仓库根目录，当前只记录基线导入，不把它当作最终方案。基线版本、仓库状态、许可证、运行风险和后续修改边界见[基线说明](docs/基线说明.md)。
+当前系统代码、数据处理脚本、索引配置和评测入口均位于本仓库；组件边界、运行风险和后续修改范围见[基线说明](docs/基线说明.md)。
 
 ## 评测主线
 

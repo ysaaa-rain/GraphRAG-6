@@ -1,7 +1,7 @@
 [project]
 name = "graphrag6-retrieval"
 version = "0.1.0"
-description = "GraphRAG-6 自定义检索算法：LightRAG 风格、HippoRAG 2 风格、Hybrid Path"
+description = "GraphRAG-6 自定义检索算法：LightRAG 风格、HippoRAG 2 风格、PathFusionRAG"
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "pandas~=3.0",

@@ -4,16 +4,14 @@
 """GraphRAG-6 自己的检索算法库。
 
 和微软的 GraphRAG 引擎（仓库根的 ``packages/``）分开：这里只放本项目实现的部分——
-三种可切换的自定义检索（LightRAG 风格、HippoRAG 2 风格、Hybrid Path）、检索轨迹
+三种可切换的自定义检索（LightRAG 风格、HippoRAG 2 风格、PathFusionRAG）、检索轨迹
 的数据结构，以及 trace 落盘。前端 ``graphrag-workbench`` 只消费这个包，不重复实现。
 
 文件来源：
 
 - ``retrieval.py`` / ``custom_search.py`` / ``trace_store.py``：本项目在 commit
-  0b8665c（2026-09-11）新增，原本放在上游演示前端目录 ``unified-search-app/app/rag/``，
-  2026-09-13 抽成独立包；
-- ``typing.py``：源自上游 Microsoft 的 ``unified-search-app/app/rag/typing.py``
-  （commit 0e1a6e3），由本项目扩展出 SearchMethod 与 RetrievalTrace。
+  0b8665c（2026-09-11）新增，后于 2026-09-13 抽成独立包；
+- ``typing.py``：在兼容 GraphRAG-6 数据契约的基础上扩展出 SearchMethod 与 RetrievalTrace。
 """
 
 from .custom_search import (

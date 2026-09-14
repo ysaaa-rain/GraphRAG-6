@@ -97,7 +97,7 @@ def test_hipporag_style_exposes_graph_path():
 
 
 def test_hybrid_path_fuses_dense_candidate_and_path():
-    """Hybrid Path combines a dense candidate with a graph path."""
+    """PathFusionRAG combines a dense candidate with a graph path."""
     bundle = make_retriever().retrieve(
         "Alpha",
         SearchMethod.HYBRID_PATH,
