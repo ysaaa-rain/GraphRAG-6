@@ -3,14 +3,15 @@
 
 """Persistence helpers for reproducible, query-level retrieval traces.
 
-直接读写 ``<index_dir>/output/retrieval_traces.parquet``，不依赖已删除的旧前端
-那套 Datasource 抽象，字段和文件位置与旧版保持一致。
+直接将检索结果写入 ``<index_dir>/output/retrieval_traces.parquet``，使用临时文件替换保证落盘时的文件完整性。
 """
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
+from tempfile import NamedTemporaryFile
+from threading import Lock
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
@@ -19,6 +20,7 @@ if TYPE_CHECKING:
     from .typing import RetrievalTrace
 
 TRACE_FILE = "output/retrieval_traces.parquet"
+_TRACE_WRITE_LOCK = Lock()
 NESTED_FIELDS = (
     "matched_entity_ids",
     "matched_entities",
@@ -52,13 +54,22 @@ def trace_path(index_dir: str | Path) -> Path:
 
 
 def save_trace(index_dir: str | Path, trace: RetrievalTrace) -> Path:
-    """Append one trace to ``<index_dir>/output/retrieval_traces.parquet``."""
+    """Append a trace without exposing a partially written Parquet file."""
     path = trace_path(index_dir)
     path.parent.mkdir(parents=True, exist_ok=True)
-    batch = pd.DataFrame([trace_record(trace)])
-    if path.is_file():
-        batch = pd.concat([pd.read_parquet(path), batch], ignore_index=True)
-    batch.to_parquet(path, index=False)
+    with _TRACE_WRITE_LOCK:
+        batch = pd.DataFrame([trace_record(trace)])
+        if path.is_file():
+            batch = pd.concat([pd.read_parquet(path), batch], ignore_index=True)
+
+        # A separate temporary file protects readers if writing is interrupted.
+        with NamedTemporaryFile(dir=path.parent, suffix=".parquet", delete=False) as tmp:
+            temporary_path = Path(tmp.name)
+        try:
+            batch.to_parquet(temporary_path, index=False)
+            temporary_path.replace(path)
+        finally:
+            temporary_path.unlink(missing_ok=True)
     return path
 
 
