@@ -32,7 +32,7 @@ Medical 已完成图索引、2,062 道 Local Search 查询，以及全部 2,062 
 | Context Relevancy | 0.662225 |
 | Evidence Recall | 0.568109 |
 
-retrieval 评价中，Complex Reasoning 和 Fact Retrieval 各有 168 道题的两个单项指标为 null；汇总均值跳过这些无法计算的值。Novel 的早期额度错误记录于[实验评测说明](./GraphRAG-Bench全量评测说明.md)；它属于实验过程中的历史异常。
+retrieval 评价中，Complex Reasoning 和 Fact Retrieval 各有 168 道题的两个单项指标为 null；汇总均值跳过这些无法计算的值。
 
 ## 4. 公开数据集方法比较
 
