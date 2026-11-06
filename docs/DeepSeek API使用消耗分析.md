@@ -2,7 +2,7 @@
 
 ## 1. 统计目的与口径
 
-本文记录截至 2026-09-09 项目本地运行产物中可以追溯的 DeepSeek 使用情况，帮助控制实验成本、安排 API 额度，并避免把本地 Qwen embedding 的运行量误记为 DeepSeek 消耗。
+本文汇总截至 2026-09-09 的建库、查询和自动评测阶段 DeepSeek API 使用统计，区分模型调用、缓存记录与本地 Qwen embedding 计算。
 
 本文的 token 分为两种口径：
 
@@ -125,25 +125,13 @@ Enron 本轮只使用 66 封邮件作为可控展示分母，不代表 517,401 �
 
 该阶段属于正式实际应用展示准备，不属于 GraphRAG-Bench Medical/Novel 的官方 benchmark 消耗。最终一次运行显示 452 条缓存响应，重复运行时应优先复用缓存。
 
-### 3.6 Novel：只发生了失败的额度检查请求
-
-在 2026-09-09 的统计截止时，Novel 首次建库请求失败。该次日志记录：
-
-    attempted_request_count: 1
-    successful_response_count: 0
-    failed_response_count: 1
-    error: Insufficient Balance
-
-本地日志没有记录成功响应 token。由于请求在服务端额度校验阶段失败，不能从项目文件判断服务商是否产生了任何计费；这 1 次失败请求不纳入已记录 token 合计，是否产生费用只能在 DeepSeek 控制台确认。
-
 ## 4. 当前结论
 
 1. 已记录的最大消耗阶段是 Medical 查询：约 2,080.9 万 token，主要来自 2,062 次最终答案生成。
 2. Medical 建库是第二大消耗阶段：约 619.6 万 token，主要集中在实体/关系抽取、描述汇总和社区报告。
 3. 官方自动评测还会产生额外 DeepSeek 消耗：generation 正常路径约 7,428 次 judge 调用，retrieval 正常路径约 6,186 次 judge 调用；本次没有 token usage 记录，因此未纳入 2,787.8 万已记录 token。
 4. Enron 66 封试验约 87.3 万 token；它与 Medical/Novel benchmark 分开统计。
-5. Novel 在本次统计区间内仅记录 1 次额度校验失败请求，未产生可统计的成功调用 token。
-6. Qwen embedding 在本机运行，不计入 DeepSeek API；官方评测阶段的 Qwen 语义相似度也不计入 DeepSeek API。
+5. Qwen embedding 在本机运行，不计入 DeepSeek API；官方评测阶段的 Qwen 语义相似度也不计入 DeepSeek API。
 
 ## 5. 后续成本记录要求
 
