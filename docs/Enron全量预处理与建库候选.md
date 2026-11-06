@@ -2,7 +2,7 @@
 
 > 记录日期：2026-09-08
 >
-> 当前状态：全量预处理已完成；California Power Crisis 的 66 封受控分母已经确定。上一轮 GraphRAG 建库已生成核心中间表但未出现最终完成标记，当前需恢复/验收；Vector baseline 尚未开始。
+> 当前状态：全量邮件预处理已完成，California Power Crisis 66 封索引已完成并通过检查，GraphRAG/Vector 首轮对照已运行。
 
 ## 1. 输入与输出
 
@@ -64,11 +64,11 @@ maildir/dasovich-j/california_crisis__press/ 46 封
 合计                                          66 封
 ```
 
-建库输入为 `data/processed/enron/california_crisis_66/documents.jsonl`，由全量规范化结果筛选而来；对应范围清单为 `data/processed/enron/california_crisis_66/scope_manifest.json`。上一轮 GraphRAG 索引只包含这 66 封，不是 30 封 S0，也不是 517,401 封全量邮件；当前已有部分核心产物但尚未验收。Vector baseline 必须在同一 66 封输入和同一配置下另行运行。
+建库输入为 `data/processed/enron/california_crisis_66/documents.jsonl`，由全量规范化结果筛选而来；对应范围清单为 `data/processed/enron/california_crisis_66/scope_manifest.json`。GraphRAG 索引使用这 66 封受控输入，生成 66 个 documents、71 个 text units、644 个 entities、1,374 个 relationships、37 个 communities 和 35 个 community reports。Vector baseline 采用同一批邮件；比较结果保存在对应的 CA 和 CC 题组文件中。
 
 日志已经出现社区报告 JSON 控制字符警告，导致部分社区报告未生成；上一轮日志最后停在 text-unit embedding，`context.json` 为空，不能把现有 parquet/LanceDB 中间产物当作已验收结果。需要恢复或重跑索引，确认所有工作流有完成标记，并检查异常是否影响查询。
 
-题目设计已完成：主问题 CA01 直接贡献 25 封唯一邮件，另有 CC01、CC02、CC03 三道同一 66 封分母下的辅助题。详细问题、证据和展示顺序见[项目当前状态与 Enron 展示交接](./项目当前状态与Enron展示交接.md)与[CA01 题目设计](../experiments/enron_california_crisis/question_design_CA01.md)。
+题目设计包括主问题 CA01（25 封证据邮件）和同一 66 封分母下的 CC 题组；另外已运行 CA02 和 CA03 的 Graph/Vector 对照。详细问题、证据和展示顺序见[项目当前状态与 Enron 展示交接](./项目当前状态与Enron展示交接.md)与[CA01 题目设计](../experiments/enron_california_crisis/question_design_CA01.md)。
 
 ## 4. 下一步验收
 
