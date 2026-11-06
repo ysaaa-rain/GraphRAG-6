@@ -1,7 +1,7 @@
 # graphrag6-retrieval
 
 本项目自己的检索算法库。和微软的 GraphRAG 引擎（仓库根的 `packages/`）分开管理：
-引擎是别人写的，这里是我们要讲的部分。
+引擎提供基础索引和查询能力，本目录实现面向 GraphRAG Parquet 索引的独立检索策略。
 
 ## 内容
 
@@ -15,7 +15,7 @@
 界面上可切换的三种方法就来自这里：**LightRAG 风格（低层实体/关系 + 高层社区）**、
 **HippoRAG 2 风格（实体种子 + 加权 PPR 多跳）**、**PathFusionRAG（BM25 + Dense + 约束图路径融合）**。
 
-## 代码来源（写报告时按这个说）
+## 代码来源与实现边界
 
 - `retrieval.py`、`custom_search.py`、`trace_store.py`：本项目在 commit `0b8665c`
   （2026-09-11）新增，最初放在已删除的上游演示前端中，2026-09-13 抽成独立包
@@ -38,8 +38,8 @@ save_trace(index_dir, bundle.trace)
 ## 测试
 
 ```powershell
-cd D:\AI\GraphRAG-6\graphrag6-retrieval
+cd graphrag6-retrieval
 python -m unittest discover -s tests -t . -v
 ```
 
-测试不需要 graphrag 以外的服务，也不需要 embedding 服务。
+单元测试使用固定的实体、关系和文本数据，不需要远程 LLM 或 embedding 服务。
