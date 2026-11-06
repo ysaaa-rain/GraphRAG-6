@@ -1,80 +1,42 @@
 # GraphRAG-6 知识工程综合实践
 
-本项目是知识工程综合实践小组的 GraphRAG 系统工程。项目目标是建立一套可复现、可解释、可比较的 GraphRAG 实验系统。
+本项目围绕**基于知识图谱的检索增强生成（GraphRAG）**构建知识问答与实验分析系统。系统将结构化实体关系、向量检索和原文证据结合，用于跨文档信息检索、关系追踪和问答生成，并提供统一的检索工作台。
 
-项目主题：**基于知识图谱的 RAG 系统构建**。
+## 系统组成
 
-## 项目目标
+- [GraphRAG 工作台](graphrag-workbench/)：基于 Streamlit 的索引管理、七种检索方法切换、答案对照、实体关系图与证据链展示。
+- [检索算法包](graphrag6-retrieval/)：LightRAG 风格双层检索、HippoRAG 2 风格的图传播检索，以及 PathFusionRAG 混合路径检索。
+- [实验脚本](scripts/)与[实验配置](experiments/)：Enron 邮件预处理、GraphRAG-Bench 查询与评测、Enron 检索对照。
+- [Microsoft GraphRAG 引擎](packages/)：项目采用的开源索引与查询基础，保留其原有许可证和版权声明。自定义检索策略与工作台分别位于独立目录。
 
-在公开数据集和开放文本上，完成知识图谱构建、检索、知识注入与问答生成，并在相同模型、数据、提示词和输出格式下，对比 Vector RAG、GraphRAG 和 Hybrid RAG 的效果、成本与延迟。
+PathFusionRAG 对 BM25 词项匹配、Dense 检索与有限跳数图路径进行加权融合，并输出候选证据对应的实体、关系、路径及分数。其图路径分数用于排序增强；具体实现和参数见[算法说明](docs/GraphRAG方法调研与系统实现细节.md)。
 
-项目结论以实验数据为依据：如果图检索没有在某类问题上优于向量检索，也要记录原因和适用边界，不预设“GraphRAG 必然更好”。
+## 数据与实验
 
-## 前端与建库（新同学从这里开始）
+项目使用 Enron Email、GraphRAG-Bench 等数据开展索引、问答与检索评测，同时对 Natural Questions、HotpotQA、2WikiMultiHopQA、MuSiQue、Qasper 和 QMSum 进行了多方法对照实验。六个公开数据集的运行结果在工作台的“方法对照”页面展示，具体数值和场景分析见[方法与实验说明](docs/GraphRAG方法调研与系统实现细节.md)。
 
-检索界面和"从零建库到跑通"的完整步骤见 [graphrag-workbench/README.md](graphrag-workbench/README.md)。
+Enron Email 完成了 **517,401 封邮件**的统一预处理与文件夹审计。California Power Crisis 案例采用两个原始文件夹共 **66 封邮件**建库，生成 66 个 documents、71 个 text units、644 个 entities、1,374 个 relationships、37 个 communities 和 35 个 community reports。Enron 的 Graph/Vector 检索对照已经运行，包括 CA01、CA02、CA03 和 CC 题组；不同问题中两种检索方式各有优势，逐题比较见项目实验说明。
 
-- [graphrag-workbench](graphrag-workbench/)：GraphRAG 工作台前端。建索引进度、七种检索方法对照、每个阶段的产物、证据链与子图
-- [graphrag-workbench/index-template](graphrag-workbench/index-template/)：新建索引的模板，复制即用（配置 + 13 个提示词，不需要手写 settings.yaml）
-- [graphrag6-retrieval](graphrag6-retrieval/)：本项目自己的检索算法（LightRAG 风格、HippoRAG 2 风格、PathFusionRAG）
+GraphRAG-Bench Medical 完成 **2,062 道问题**的 GraphRAG 查询、generation 与 retrieval 指标评测；Answer Correctness 为 0.363293，Evidence Recall 为 0.568109。评测指标和异常值口径见[全量评测说明](docs/GraphRAG-Bench全量评测说明.md)。Novel 的早期 API 额度异常保留在历史实验记录中，当前展示以已实际运行的实验内容和对应记录为准。
 
-两点要知道：
+实验使用的索引、向量库及批量问答输出由实验环境保存，Git 仓库主要维护代码、配置、评价方式和结果汇总。运行时通过 `GRAPHRAG_INDEX` 指向相应索引目录。
 
-1. **索引不在仓库里**。`experiments/outputs/` 被 `.gitignore` 忽略，因为索引是数据产物。要么照上面的快速开始自己建一份，要么把现有索引目录放在本地，用 `GRAPHRAG_INDEX` 环境变量指过去。
-2. **引擎和算法是两回事**。微软的 GraphRAG 引擎源码在 `packages/`（约 3 万行，本项目只在社区报告解析处改过 1 个文件做 DeepSeek 适配）；本项目自己的算法在 `graphrag6-retrieval/`（约 1,300 行）。
+## 运行
 
-## 当前阶段
+工作台的安装、配置、索引构建和启动命令见[工作台快速开始](graphrag-workbench/README.md)。检索算法的独立测试入口见[算法包说明](graphrag6-retrieval/README.md)。
 
-- 已完成课程要求解析并归档原始课件。
-- 已保留项目初始化记录，并固定当前系统的代码与配置版本。
-- 已将正式评测范围收敛为 GraphRAG-Bench Novel、GraphRAG-Bench Medical 和 Enron Email 一个实际应用场景。
-- Enron Email 使用大规模开放邮件语料；当前冻结 3–5 道跨邮件代表性问题做可解释展示；《红楼梦》不再作为最终应用主线。
-- 已完成 517,401 封 Enron 邮件的统一预处理和文件夹级审计；正式建库不使用 517,401 封全量，而使用已确定的 66 封 California Power Crisis 受控分母（两个原始文件夹：20+46 封）。
-- Enron 66 封索引已经完成并验收：生成 66 个 documents、71 个 text units、644 个 entities、1,374 个 relationships、37 个 communities 和 35 个 community reports；另有 1 个社区报告因控制字符未生成，已登记为限制。
-- Enron Graph/Vector 首轮对照已经完成，输出为 `comparison_CA01.json`、`comparison_CA02.json`、`comparison_CA03.json` 和 `comparison_CC_66.json`；CA01/CA03 为有限 Graph 召回优势，CA02 为 Vector 略优，不能外推为普遍结论。
-- Medical GraphRAG 建库、2,062 道查询、官方 generation 和 retrieval 评测均已完成；retrieval 个别题目的单项指标为 null，详见评测说明。Novel 已暂停，等待 DeepSeek 额度恢复。
-- 已记录 DeepSeek V4 Flash 的 JSON-object 兼容适配、Qwen 模型 revision、向量维度和本机 MPS/CPU 稳定性配置；完整当前状态和组员展示交接见[项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)。
-- GraphRAG-6 工作台已支持七种可选检索方法，并统一保存实体、关系、图路径、子图、文本证据和 recall 字段；自定义方法与前端证据链说明见[GraphRAG 方法调研与系统实现细节](docs/GraphRAG方法调研与系统实现细节.md)。
+## 文档
 
-## 文档入口
+- [系统方法与实现](docs/GraphRAG方法调研与系统实现细节.md)
+- [实验与当前进展](docs/项目当前状态与Enron展示交接.md)
+- [GraphRAG-Bench 评测](docs/GraphRAG-Bench全量评测说明.md)
+- [Enron 应用与数据](docs/实际应用领域方案.md)
+- [评测设计](docs/评测方案.md)
+- [配置与运行](docs/配置与运行.md)
+- [数据资产](docs/数据资产清单.md)
+- [基线来源](docs/基线说明.md)
+- [开发与协作](docs/协作与质量规范.md)
 
-- [课程要求与逐项检查表](docs/课程要求.md)
-- [项目章程与开发路线](docs/项目章程与路线.md)
-- [基线说明](docs/基线说明.md)
-- [配置与运行约定](docs/配置与运行.md)
-- [评测方案](docs/评测方案.md)
-- [阶段计划与执行清单](docs/阶段计划与执行清单.md)
-- [开放数据资产清单](docs/数据资产清单.md)
-- [Enron 实际应用方案](docs/实际应用领域方案.md)
-- [项目当前状态与 Enron 展示交接](docs/项目当前状态与Enron展示交接.md)
-- [GraphRAG 方法调研与系统实现细节](docs/GraphRAG方法调研与系统实现细节.md)
-- [协作与质量规范](docs/协作与质量规范.md)
-- [阶段变更记录](docs/变更记录.md)
-- [老师原始课件](docs/参考资料/课程要求.pptx)
-- [总评评分标准截图](docs/参考资料/评分标准-总评.jpg)
-- [阶段 1 评分标准截图](docs/参考资料/阶段1评分标准.jpg)
+## 开源来源
 
-## 代码基线
-
-当前系统代码、数据处理脚本、索引配置和评测入口均位于本仓库；组件边界、运行风险和后续修改范围见[基线说明](docs/基线说明.md)。
-
-## 评测主线
-
-1. 先用小规模固定样例和 GraphRAG-Bench Novel 的 100 条样本完成端到端冒烟测试。
-2. 对两个 benchmark 和 Enron 实际应用场景，使用同一套条件运行 Vector、Graph 和 Hybrid 三种检索配置。
-3. benchmark 使用官方问题、参考答案和评测协议；Enron 使用本组自建问题、人工参考答案、证据和路径标注。
-4. 记录答案正确性、ROUGE-L、覆盖率、忠实度、证据召回、路径召回、上下文相关性、索引结构、延迟和成本。
-5. 冒烟测试稳定后，再运行 Novel 和 Medical 的完整测试，并完成 Enron 实际应用实验。
-
-阶段 1 还必须完成 3–5 个代表性问题、数据处理前后样例、最小问答闭环以及成员/进度说明；总评还必须展示 2–3 个普通 RAG 与 GraphRAG 的成功或失败案例。
-
-## 协作原则
-
-- 每个阶段以小而清晰的 commit 存档，commit message 写明目的。
-- 代码变更必须有对应文档、测试或实验记录。
-- 合并前先运行测试和静态检查；发现自动生成代码错误时先修正，再验收合并。
-- 仓库不保存聊天记录、内部上下文、密钥、个人隐私或无用途的中间文件。
-
-## 许可证说明
-
-基线目录中的许可证和版权声明保留原样。新增代码、文档和实验产物的许可证与数据许可将在对应文件或数据记录中明确说明。
+核心索引引擎采用 [Microsoft GraphRAG](https://github.com/microsoft/graphrag)，并保留上游许可证及相关版权声明。LightRAG 与 HippoRAG 2 的实现参考对应公开论文及方法思想，属于基于 GraphRAG 数据结构的独立适配；PathFusionRAG 为本项目设计的融合策略。各部分算法来源与实现差异见[方法说明](docs/GraphRAG方法调研与系统实现细节.md)。
