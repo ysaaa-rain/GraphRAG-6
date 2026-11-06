@@ -314,7 +314,7 @@ DATA_ROOT/
 
 ### 12.1 首页展示内容
 
-`graphrag-workbench/app/main.py` 的第一张页面是自研的 **首页 · 方法原理**，不沿用已删除的上游 `unified-search-app` 界面。首页按“问题 → 方法 → 算法 → 场景 → 结果状态”组织：
+工作台首页按照“问题 → 方法 → 算法 → 场景 → 结果”组织内容：
 
 1. 解释为什么从 Vector RAG 走到 GraphRAG：相似文本不能自动恢复跨文档实体关系。
 2. 用统一卡片解释 Basic、Microsoft Local、Microsoft Global、DRIFT、LightRAG、HippoRAG 2 和 PathFusionRAG 的机制、适合场景与风险。
