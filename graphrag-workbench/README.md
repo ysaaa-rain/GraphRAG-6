@@ -35,7 +35,7 @@ winget install astral-sh.uv
 
 ```powershell
 cd D:\
-git clone <仓库地址> GraphRAG-6
+git clone https://github.com/ysaaa-rain/GraphRAG-6.git GraphRAG-6
 ```
 
 > 到 D 盘，把整个项目下载成 `D:\GraphRAG-6`。
