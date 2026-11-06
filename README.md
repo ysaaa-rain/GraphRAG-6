@@ -28,7 +28,7 @@ GraphRAG-Bench Medical 完成 **2,062 道问题**的 GraphRAG 查询、generatio
 ## 文档
 
 - [系统方法与实现](docs/GraphRAG方法调研与系统实现细节.md)
-- [实验与当前进展](docs/项目当前状态与Enron展示交接.md)
+- [实验与当前进展](docs/实验进展与Enron案例.md)
 - [GraphRAG-Bench 评测](docs/GraphRAG-Bench全量评测说明.md)
 - [Enron 应用与数据](docs/实际应用领域方案.md)
 - [评测设计](docs/评测方案.md)
