@@ -17,7 +17,7 @@ PathFusionRAG 对 BM25 词项匹配、Dense 检索与有限跳数图路径进行
 
 Enron Email 完成了 **517,401 封邮件**的统一预处理与文件夹审计。California Power Crisis 案例采用两个原始文件夹共 **66 封邮件**建库，生成 66 个 documents、71 个 text units、644 个 entities、1,374 个 relationships、37 个 communities 和 35 个 community reports。Enron 的 Graph/Vector 检索对照已经运行，包括 CA01、CA02、CA03 和 CC 题组；不同问题中两种检索方式各有优势，逐题比较见项目实验说明。
 
-GraphRAG-Bench Medical 完成 **2,062 道问题**的 GraphRAG 查询、generation 与 retrieval 指标评测；Answer Correctness 为 0.363293，Evidence Recall 为 0.568109。评测指标和异常值口径见[全量评测说明](docs/GraphRAG-Bench全量评测说明.md)。Novel 的早期 API 额度异常保留在历史实验记录中，当前展示以已实际运行的实验内容和对应记录为准。
+GraphRAG-Bench Medical 完成 **2,062 道问题**的 GraphRAG 查询、generation 与 retrieval 指标评测；Answer Correctness 为 0.363293，Evidence Recall 为 0.568109。评测指标和异常值口径见[全量评测说明](docs/GraphRAG-Bench全量评测说明.md)。
 
 实验使用的索引、向量库及批量问答输出由实验环境保存，Git 仓库主要维护代码、配置、评价方式和结果汇总。运行时通过 `GRAPHRAG_INDEX` 指向相应索引目录。
 
