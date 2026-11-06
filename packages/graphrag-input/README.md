@@ -1,44 +1,7 @@
-# GraphRAG Inputs
+# GraphRAG Input 组件
 
-> [!WARNING]
-> GraphRAG is a research project that explores the functional use of graphs to form a targeted context for question answering. Since our first release in July 2024 the capabilities of frontier models have changed dramatically, and our portfolio of research projects has diversified to match. This project is largely in maintenance mode, and won't be accepting new PRs or implementing new features. We'll perform bug fixes and dependency updates as appropriate, particularly to address CVEs as they arise.
+本包负责把文本、CSV、JSON、JSONL、Parquet 和可选文档转换器的输入统一加载为索引器使用的文档结构。Enron 本轮直接使用项目生成的 `documents.jsonl`，不依赖额外格式转换。
 
-This package provides input document loading utilities for GraphRAG, supporting multiple file formats including CSV, JSON, JSON Lines, and plain text.
+## 开源来源
 
-## Supported File Types
-
-The following four standard file formats are supported out of the box:
-
-- **CSV** - Tabular data with configurable column mappings
-- **JSON** - JSON files with configurable property paths
-- **JSON Lines** - Line-delimited JSON records
-- **Text** - Plain text files
-
-### Markitdown Support
-
-Additionally, we support the `InputType.MarkItDown` format, which uses the [MarkItDown](https://github.com/microsoft/markitdown) library to import any supported file type. The MarkItDown converter can handle a wide variety of file formats including Office documents, PDFs, HTML, and more.
-
-**Note:** Additional optional dependencies may need to be installed depending on the file type you're processing. The choice of converter is determined by MarkItDowns's processing logic, which primarily uses the file extension to select the appropriate converter. Please refer to the [MarkItDown repository](https://github.com/microsoft/markitdown) for installation instructions and detailed information about supported formats.
-
-## Examples
-
-Basic usage with the factory:
-
-1. Import a pdf with MarkItDown:
-
-```bash
-pip install 'markitdown[pdf]' # required dependency for pdf processing
-```
-
-2. YAML config example for above:
-
-```yaml
-input:
-  type: markitdown
-  file_pattern: ".*\\.pdf$$"
-input_storage:
-  type: file
-  base_dir: "input"
-```
-
-[Open the notebook to explore the input example code](example_notebooks/input_example.ipynb)
+本组件源自 [Microsoft GraphRAG](https://github.com/microsoft/graphrag)，沿用仓库根目录的 MIT 许可证，源码版权声明保留。

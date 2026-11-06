@@ -77,3 +77,8 @@ packages/*/LICENSE
 # Notebooks outputs
 packages/graphrag-*/example_notebooks/**/output
 packages/graphrag-*/example_notebooks/**/cache
+
+# Local tooling and presentation build intermediates
+.codex-ppt-build/
+.pytest_cache/
+.ruff_cache/

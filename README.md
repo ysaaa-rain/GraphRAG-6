@@ -11,6 +11,18 @@
 
 PathFusionRAG 对 BM25 词项匹配、Dense 检索与有限跳数图路径进行加权融合，并输出候选证据对应的实体、关系、路径及分数。其图路径分数用于排序增强；具体实现和参数见[算法说明](docs/GraphRAG方法调研与系统实现细节.md)。
 
+## 目录结构
+
+| 路径 | 内容 |
+|---|---|
+| `graphrag-workbench/` | 工作台、索引模板与界面测试 |
+| `graphrag6-retrieval/` | 自定义检索算法、证据记录与算法测试 |
+| `packages/` | Microsoft GraphRAG 引擎及运行组件 |
+| `scripts/` | 数据处理、模型服务和评测脚本 |
+| `experiments/` | 实验配置、问题与证据标注 |
+| `docs/` | 方法、运行说明、数据来源与结果汇总 |
+| `tests/` | 引擎测试和固定样例 |
+
 ## 数据与实验
 
 项目使用 Enron Email、GraphRAG-Bench 等数据开展索引、问答与检索评测，同时对 Natural Questions、HotpotQA、2WikiMultiHopQA、MuSiQue、Qasper 和 QMSum 进行了多方法对照实验。六个公开数据集的运行结果在工作台的“方法对照”页面展示，具体数值和场景分析见[方法与实验说明](docs/GraphRAG方法调研与系统实现细节.md)。

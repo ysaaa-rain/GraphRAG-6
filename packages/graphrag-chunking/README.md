@@ -1,26 +1,7 @@
-# GraphRAG Chunking
+# GraphRAG Chunking 组件
 
-> [!WARNING]
-> GraphRAG is a research project that explores the functional use of graphs to form a targeted context for question answering. Since our first release in July 2024 the capabilities of frontier models have changed dramatically, and our portfolio of research projects has diversified to match. This project is largely in maintenance mode, and won't be accepting new PRs or implementing new features. We'll perform bug fixes and dependency updates as appropriate, particularly to address CVEs as they arise.
+本包负责把输入文档切分为可索引的 text units，并提供 token、句子和基础切分策略。Enron 的原始邮件先经过项目预处理，再由该组件生成统一的文本单元。
 
-This package contains a collection of text chunkers, a core config model, and a factory for acquiring instances.
+## 开源来源
 
-## Examples
-
-### Basic sentence chunking with nltk
-
-The SentenceChunker class splits text into individual sentences by identifying sentence boundaries. It takes input text and returns a list where each element is a separate sentence, making it easy to process text at the sentence level.
-
-[Open the notebook to explore the basic sentence example code](example_notebooks/basic_sentence_example.ipynb)
-
-### Token chunking
-
-The TokenChunker splits text into fixed-size chunks based on token count rather than sentence boundaries. It uses a tokenizer to encode text into tokens, then creates chunks of a specified size with configurable overlap between chunks.
-
-[Open the notebook to explore the token chunking example code](example_notebooks/token_chunking_example.ipynb)
-
-### Using the factory via helper util
-
-The create_chunker factory function provides a configuration-driven approach to instantiate chunkers by accepting a ChunkingConfig object that specifies the chunking strategy and parameters. This allows for more flexible and maintainable code by separating chunker configuration from direct instantiation.
-
-[Open the notebook to explore the factory helper util example code](example_notebooks/factory_helper_util_example.ipynb)
+本组件源自 [Microsoft GraphRAG](https://github.com/microsoft/graphrag)，沿用仓库根目录的 MIT 许可证，源码版权声明保留。

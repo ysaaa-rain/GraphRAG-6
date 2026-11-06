@@ -1,47 +1,7 @@
-# GraphRAG Storage
+# GraphRAG Storage 组件
 
-> [!WARNING]
-> GraphRAG is a research project that explores the functional use of graphs to form a targeted context for question answering. Since our first release in July 2024 the capabilities of frontier models have changed dramatically, and our portfolio of research projects has diversified to match. This project is largely in maintenance mode, and won't be accepting new PRs or implementing new features. We'll perform bug fixes and dependency updates as appropriate, particularly to address CVEs as they arise.
+本包提供索引表和查询输入的存储抽象，支持文件、Parquet 以及项目配置中启用的其他存储后端。Enron 本轮主要使用本地 Parquet 产物和 LanceDB 向量目录。
 
-This package provides a unified storage abstraction layer with support for multiple backends including file system, Azure Blob, Azure Cosmos, and memory storage. It features a factory-based creation system with configuration-driven setup and extensible architecture for implementing custom storage providers.
+## 开源来源
 
-## Basic
-
-This example creates a file storage system using the GraphRAG storage package's configuration system. The example shows setting up file storage in a specified directory and demonstrates basic storage operations like setting and getting key-value pairs.
-
-[Open the notebook to explore the basic storage example code](example_notebooks/basic_storage_example.ipynb)
-
-## Custom Storage
-
-Here we create a custom storage implementation by extending the base Storage class and registering it with the GraphRAG storage system. Once registered, the custom storage can be instantiated through the factory pattern using either StorageConfig or directly via storage_factory, enabling extensible storage solutions for different backends.
-
-[Open the notebook to explore the custom storage example code](example_notebooks/basic_storage_example.ipynb)
-
-## Details
-
-By default, the `create_storage` comes with the following storage providers registered that correspond to the entries in the `StorageType` enum.
-
-- `FileStorage`
-- `AzureBlobStorage`
-- `AzureCosmosStorage`
-- `MemoryStorage`
-
-The preregistration happens dynamically, e.g., `FileStorage` is only imported and registered if you request a `FileStorage` with `create_storage(StorageType.File, ...)`. There is no need to manually import and register builtin storage providers when using `create_storage`.
-
-If you want a clean factory with no preregistered storage providers then directly import `storage_factory` and bypass using `create_storage`. The downside is that `storage_factory.create` uses a dict for init args instead of the strongly typed `StorageConfig` used with `create_storage`.
-
-```python
-from graphrag_storage.storage_factory import storage_factory
-from graphrag_storage.file_storage import FileStorage
-
-# storage_factory has no preregistered providers so you must register any
-# providers you plan on using.
-# May also register a custom implementation, see above for example.
-storage_factory.register("my_storage_key", FileStorage)
-
-storage = storage_factory.create(
-    strategy="my_storage_key", init_args={"base_dir": "...", "other_settings": "..."}
-)
-
-...
-```
+本组件源自 [Microsoft GraphRAG](https://github.com/microsoft/graphrag)，沿用仓库根目录的 MIT 许可证，源码版权声明保留。

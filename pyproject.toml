@@ -72,22 +72,7 @@ _sort_imports = "ruff check --select I --fix ."
 _format_code = "ruff format  ."
 _ruff_check = 'ruff check .'
 _pyright = "pyright"
-_convert_local_search_nb = 'jupyter nbconvert --output-dir=docsite/posts/query/notebooks/ --output="{notebook_name}_nb" --template=docsite/nbdocsite_template --to markdown examples_notebooks/local_search.ipynb'
-_convert_global_search_nb = 'jupyter nbconvert --output-dir=docsite/posts/query/notebooks/ --output="{notebook_name}_nb" --template=docsite/nbdocsite_template --to markdown examples_notebooks/global_search.ipynb'
 _copy_build_assets = "python -m scripts.copy_build_assets"
-_semversioner_release = "semversioner release"
-_semversioner_changelog = "semversioner changelog > CHANGELOG.md"
-# Add more update toml tasks as packages are added
-_semversioner_update_graphrag_toml_version = "update-toml update --file packages/graphrag/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_graphrag_chunking_toml_version = "update-toml update --file packages/graphrag-chunking/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_graphrag_common_toml_version = "update-toml update --file packages/graphrag-common/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_graphrag_storage_toml_version = "update-toml update --file packages/graphrag-storage/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_graphrag_cache_toml_version = "update-toml update --file packages/graphrag-cache/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_graphrag_input_toml_version = "update-toml update --file packages/graphrag-input/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_graphrag_vectors_toml_version = "update-toml update --file packages/graphrag-vectors/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_graphrag_llm_toml_version = "update-toml update --file packages/graphrag-llm/pyproject.toml --path project.version --value $(uv run semversioner current-version)"
-_semversioner_update_workspace_dependency_versions = "python -m scripts.update_workspace_dependency_versions"
-semversioner_add = "semversioner add-change"
 coverage_report = 'coverage report --omit "**/tests/**" --show-missing'
 check_format = 'ruff format . --check'
 fix = "ruff check --fix ."
@@ -112,28 +97,6 @@ _sync = "uv sync --all-packages"
 
 [[tool.poe.tasks.build]]
 sequence = ['_copy_build_assets', '_build_packages']
-
-[[tool.poe.tasks.release]]
-sequence = [
-    '_semversioner_release',
-    '_semversioner_changelog',
-    # Add more update toml tasks as packages are added
-    '_semversioner_update_graphrag_toml_version',
-    '_semversioner_update_graphrag_common_toml_version',
-    '_semversioner_update_graphrag_chunking_toml_version',
-    '_semversioner_update_graphrag_input_toml_version',
-    '_semversioner_update_graphrag_storage_toml_version',
-    '_semversioner_update_graphrag_cache_toml_version',
-    "_semversioner_update_graphrag_vectors_toml_version",
-    '_semversioner_update_graphrag_llm_toml_version',
-    '_semversioner_update_workspace_dependency_versions',
-    '_sync',
-]
-ignore_fail = 'return_non_zero'
-
-[[tool.poe.tasks.convert_docsite_notebooks]]
-sequence = ['_convert_local_search_nb', '_convert_global_search_nb']
-ignore_fail = 'return_non_zero'
 
 [[tool.poe.tasks.format]]
 sequence = ['_sort_imports', '_format_code']

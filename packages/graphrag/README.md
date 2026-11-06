@@ -1,79 +1,22 @@
-# GraphRAG
+# GraphRAG 核心系统
 
-> [!WARNING]
-> GraphRAG is a research project that explores the functional use of graphs to form a targeted context for question answering. Since our first release in July 2024 the capabilities of frontier models have changed dramatically, and our portfolio of research projects has diversified to match. This project is largely in maintenance mode, and won't be accepting new PRs or implementing new features. We'll perform bug fixes and dependency updates as appropriate, particularly to address CVEs as they arise.
+本包提供项目的索引、图谱构建、社区摘要和查询入口。当前项目通过它完成 Enron 邮件的实体—关系—社区建库，并提供 Local、Global、DRIFT 与 Basic 查询路径。
 
-👉 [Microsoft Research Blog Post](https://www.microsoft.com/en-us/research/blog/graphrag-unlocking-llm-discovery-on-narrative-private-data/)<br/>
-👉 [Read the docs](https://microsoft.github.io/graphrag)<br/>
-👉 [GraphRAG Arxiv](https://arxiv.org/pdf/2404.16130)
+## 项目内使用
 
-<div align="left">
-  <a href="https://pypi.org/project/graphrag/">
-    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/graphrag">
-  </a>
-  <a href="https://pypi.org/project/graphrag/">
-    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/graphrag">
-  </a>
-  <a href="https://github.com/microsoft/graphrag/issues">
-    <img alt="GitHub Issues" src="https://img.shields.io/github/issues/microsoft/graphrag">
-  </a>
-  <a href="https://github.com/microsoft/graphrag/discussions">
-    <img alt="GitHub Discussions" src="https://img.shields.io/github/discussions/microsoft/graphrag">
-  </a>
-</div>
+```bash
+./.venv/bin/python -m graphrag index \
+  --root experiments/enron_california_crisis \
+  --method standard \
+  --verbose
+```
 
-## Overview
+索引输出包括 documents、text units、entities、relationships、communities、community reports 以及文本/实体/社区向量。查询时，GraphRAG 使用图结构和文本证据组织上下文；Basic Search 使用文本单元向量作为 Vector RAG 对照。
 
-The GraphRAG project is a data pipeline and transformation suite that is designed to extract meaningful, structured data from unstructured text using the power of LLMs.
+## 当前实验边界
 
-To learn more about GraphRAG and how it can be used to enhance your LLM's ability to reason about your private data, please visit the <a href="https://www.microsoft.com/en-us/research/blog/graphrag-unlocking-llm-discovery-on-narrative-private-data/" target="_blank">Microsoft Research Blog Post.</a>
+Enron 本轮索引只使用 `data/processed/enron/california_crisis_66/documents.jsonl` 的 66 封邮件。完整的 517,401 封邮件已做规范化预处理，但没有全部送入本轮图谱索引。模型、embedding、切分规则和评测协议以项目 `docs/` 与 `experiments/` 中的配置为准。
 
-## Quickstart
+## 开源来源
 
-To get started with the GraphRAG system we recommend trying the [command line quickstart](https://microsoft.github.io/graphrag/get_started/).
-
-## Repository Guidance
-
-This repository presents a methodology for using knowledge graph memory structures to enhance LLM outputs. Please note that the provided code serves as a demonstration and is not an officially supported Microsoft offering.
-
-⚠️ _Warning: GraphRAG indexing can be an expensive operation, please read all of the documentation to understand the process and costs involved, and start small._
-
-## Diving Deeper
-
-- To learn about our contribution guidelines, see [CONTRIBUTING.md](../../CONTRIBUTING.md)
-- To start developing _GraphRAG_, see [DEVELOPING.md](../../DEVELOPING.md)
-- Join the conversation and provide feedback in the [GitHub Discussions tab!](https://github.com/microsoft/graphrag/discussions)
-
-## Prompt Tuning
-
-Using _GraphRAG_ with your data out of the box may not yield the best possible results.
-We strongly recommend to fine-tune your prompts following the [Prompt Tuning Guide](https://microsoft.github.io/graphrag/prompt_tuning/overview/) in our documentation.
-
-## Versioning
-
-Please see the [breaking changes](../../breaking-changes.md) document for notes on our approach to versioning the project.
-
-_Always run `uv run poe init --root [path] --force` between minor version bumps to ensure you have the latest config format. Run the provided migration notebook between major version bumps if you want to avoid re-indexing prior datasets. Note that this will overwrite your configuration and prompts, so back them up if necessary._
-
-## Responsible AI FAQ
-
-See [RAI_TRANSPARENCY.md](../../RAI_TRANSPARENCY.md)
-
-- [What is GraphRAG?](../../RAI_TRANSPARENCY.md#what-is-graphrag)
-- [What can GraphRAG do?](../../RAI_TRANSPARENCY.md#what-can-graphrag-do)
-- [What are GraphRAG’s intended use(s)?](../../RAI_TRANSPARENCY.md#what-are-graphrags-intended-uses)
-- [How was GraphRAG evaluated? What metrics are used to measure performance?](../../RAI_TRANSPARENCY.md#how-was-graphrag-evaluated-what-metrics-are-used-to-measure-performance)
-- [What are the limitations of GraphRAG? How can users minimize the impact of GraphRAG’s limitations when using the system?](../../RAI_TRANSPARENCY.md#what-are-the-limitations-of-graphrag-how-can-users-minimize-the-impact-of-graphrags-limitations-when-using-the-system)
-- [What operational factors and settings allow for effective and responsible use of GraphRAG?](../../RAI_TRANSPARENCY.md#what-operational-factors-and-settings-allow-for-effective-and-responsible-use-of-graphrag)
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
-trademarks or logos is subject to and must follow
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
-
-## Privacy
-
-[Microsoft Privacy Statement](https://privacy.microsoft.com/en-us/privacystatement)
+本组件源自 [Microsoft GraphRAG](https://github.com/microsoft/graphrag)，沿用仓库根目录的 MIT 许可证，源码版权声明保留。

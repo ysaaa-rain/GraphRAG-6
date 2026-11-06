@@ -1,18 +1,7 @@
-# GraphRAG LLM
+# GraphRAG LLM 组件
 
-> [!WARNING]
-> GraphRAG is a research project that explores the functional use of graphs to form a targeted context for question answering. Since our first release in July 2024 the capabilities of frontier models have changed dramatically, and our portfolio of research projects has diversified to match. This project is largely in maintenance mode, and won't be accepting new PRs or implementing new features. We'll perform bug fixes and dependency updates as appropriate, particularly to address CVEs as they arise.
+本包统一封装 completion、embedding、重试、限流、缓存、token 统计和模型指标接口。项目将 DeepSeek 用于生成/抽取，将本地 Qwen 服务用于 embedding，并在 GraphRAG 与 Vector 对照中复用相同配置。
 
-## Basic Completion
+## 开源来源
 
-This example demonstrates basic usage of the LLM library to interact with Azure OpenAI. It loads environment variables for API configuration, creates a ModelConfig for Azure OpenAI, and sends a simple question to the model. The code handles both streaming and non-streaming responses (streaming responses are printed chunk by chunk in real-time, while non-streaming responses are printed all at once). It also shows how to use the gather_completion_response utility function as a simpler alternative that automatically handles both response types and returns the complete text.
-
-[Open the notebook to explore the basic completion example code](example_notebooks/basic_completion_example.ipynb)
-
-## Basic Embedding
-
-This examples demonstrates how to generate text embeddings using the GraphRAG LLM library with Azure OpenAI's embedding service. It loads API credentials from environment variables, creates a ModelConfig for the Azure embedding model and configures authentication to use either API key or Azure Managed Identity. The script then creates an embedding client and processes a batch of two text strings ("Hello world" and "How are you?") to generate their vector embeddings.
-
-[Open the notebook to explore the basic embeddings example code](example_notebooks/basic_embedding_example.ipynb)
-
-View the [notebooks](notebooks/README.md) for more examples.
+本组件源自 [Microsoft GraphRAG](https://github.com/microsoft/graphrag)，沿用仓库根目录的 MIT 许可证，源码版权声明保留。
