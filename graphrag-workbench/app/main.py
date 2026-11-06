@@ -1065,6 +1065,10 @@ def render_evidence(trace: object) -> None:
     if hint:
         st.info(hint)
 
+    channels = getattr(trace, "channel_scores", None)
+    if isinstance(channels, dict) and "dense_vector" in channels and not channels["dense_vector"]:
+        st.caption("本次检索未返回向量候选分数，结果由其余检索信号确定。")
+
     paths = trace_view.path_rows(trace)
     if not paths.empty:
         st.markdown("**图路径**")
