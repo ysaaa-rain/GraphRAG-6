@@ -122,7 +122,7 @@ Medical 中的数值是 GraphRAG Local 在官方评测协议下的结果。跨�
 - 总 prompt token、总 output token（接口返回时）
 - 运行配置、代码版本、benchmark commit、数据文件哈希
 
-DeepSeek 的分阶段请求数和 token 统计另见[DeepSeek API 使用消耗分析](./DeepSeek%20API使用消耗分析.md)。当前查询阶段保存了逐题 token；官方 generation/retrieval 评测使用 DeepSeek 作为自动评审器，但本次结果文件没有保存服务端 usage，因此只记录题数和按源码推算的调用次数，不把推算值写成精确 token。
+DeepSeek 的分阶段请求数和 token 统计另见[DeepSeek API 使用消耗分析](./DeepSeek API使用消耗分析.md)。当前查询阶段保存了逐题 token；官方 generation/retrieval 评测使用 DeepSeek 作为自动评审器，但本次结果文件没有保存服务端 usage，因此只记录题数和按源码推算的调用次数，不把推算值写成精确 token。
 
 ## 5. 官方题目的答案和标注边界
 
@@ -252,7 +252,7 @@ Medical 官方评测汇总如下，数值直接来自被忽略的运行产物，
 工程运行统计：2,062 道均返回非空答案；查询阶段平均延迟 4.735 秒/题；记录到的 prompt token 合计 19,681,955，output token 合计 1,127,033。generation/retrieval 指标中的不可计算项以 `null` 保存，汇总均值跳过这些项。
 - 查询输出和评测使用固定的题目、模型和结果字段。
 - 评价指标包括生成质量、检索质量与索引结构。
-- Enron 与六个公开数据集的跨方法比较另见[项目实验进展](./实验进展与Enron案例.md)。
+- Enron 与六个公开数据集的跨方法比较另见[项目实验进展](./实验结果与Enron案例.md)。
 
 ## 9. 运行记录
 

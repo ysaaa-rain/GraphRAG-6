@@ -1,39 +1,14 @@
 [project]
-name = "graphrag-monorepo"
+name = "graphrag6"
 classifiers = ["Private :: Do Not Upload"]
-version = "0.0.0"
-description = "GraphRAG: A graph-based retrieval-augmented generation (RAG) system."
-authors = [
-    {name = "Alonso Guevara Fernández", email = "alonsog@microsoft.com"},
-    {name = "Andrés Morales Esquivel", email = "andresmor@microsoft.com"},
-    {name = "Chris Trevino", email = "chtrevin@microsoft.com"},
-    {name = "David Tittsworth", email = "datittsw@microsoft.com"},
-    {name = "Dayenne de Souza", email = "ddesouza@microsoft.com"},
-    {name = "Derek Worthen", email = "deworthe@microsoft.com"},
-    {name = "Gaudy Blanco Meneses", email = "gaudyb@microsoft.com"},
-    {name = "Ha Trinh", email = "trinhha@microsoft.com"},
-    {name = "Jonathan Larson", email = "jolarso@microsoft.com"},
-    {name = "Josh Bradley", email = "joshbradley@microsoft.com"},
-    {name = "Kate Lytvynets", email = "kalytv@microsoft.com"},
-    {name = "Kenny Zhang", email = "zhangken@microsoft.com"},
-    {name = "Mónica Carvajal"},
-    {name = "Nathan Evans", email = "naevans@microsoft.com"},
-    {name = "Rodrigo Racanicci", email = "rracanicci@microsoft.com"},
-    {name = "Sarah Smith", email = "smithsarah@microsoft.com"},
-]
+version = "0.1.0"
+description = "GraphRAG-6: 企业邮件知识图谱检索与证据分析系统"
 requires-python = ">=3.11,<3.14"
 
 [dependency-groups]
 dev = [
     "coverage~=7.15",
-    "deptry~=0.25",
-    "ipykernel~=7.3",
-    "jupyter~=1.1",
     "mkdocs-material~=9.7",
-    "mkdocs-jupyter~=0.26",
-    "mkdocs-exclude-search~=0.6",
-    "mkdocs-typer~=0.0.3",
-    "nbconvert~=7.17",
     "pandas-stubs~=3.0",
     "poethepoet~=0.48",
     "pyright~=1.1",
@@ -42,9 +17,6 @@ dev = [
     "pytest-dotenv~=0.5",
     "pytest-timeout~=2.5",
     "ruff~=0.16",
-    "semversioner~=3.0",
-    "update-toml~=0.2",
-    "pytest-xdist[psutil]~=3.8.0",
 ]
 
 [tool.uv]
@@ -66,7 +38,6 @@ graphrag-cache = { workspace = true }
 graphrag-vectors = { workspace = true }
 graphrag-llm = { workspace = true }
 
-# Keep poethepoet for task management to minimize changes
 [tool.poe.tasks]
 _sort_imports = "ruff check --select I --fix ."
 _format_code = "ruff format  ."
@@ -80,8 +51,6 @@ fix_unsafe = "ruff check --fix --unsafe-fixes ."
 _test_all = "coverage run -m pytest ./tests"
 test_unit = "pytest ./tests/unit"
 test_integration = "pytest ./tests/integration"
-test_smoke = "pytest ./tests/smoke"
-test_notebook = "pytest -n auto ./tests/notebook"
 test_verbs = "pytest ./tests/verbs"
 index = "python -m graphrag index"
 update = "python -m graphrag update"
@@ -110,10 +79,8 @@ ignore_fail = 'return_non_zero'
 sequence = ['_test_all', 'coverage_report']
 ignore_fail = 'return_non_zero'
 
-# Keep all existing tool configurations
 [tool.ruff]
 target-version = "py310"
-extend-include = ["*.ipynb"]
 
 [tool.ruff.format]
 preview = true
@@ -197,7 +164,6 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S", "D", "ANN", "T201", "ASYNC", "ARG", "PTH", "TRY"]
 "graphrag/index/config/*" = ["TCH"]
-"*.ipynb" = ["T201", "S101", "PT015", "B011", "CPY001", "SLF001", "DTZ005"]
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["input", "id", "bytes"]

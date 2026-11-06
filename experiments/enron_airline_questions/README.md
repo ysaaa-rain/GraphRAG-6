@@ -7,4 +7,4 @@
 
 `questions_en.jsonl` 保存英文题目、参考答案、原文证据和路径标注；`questions_zh.jsonl` 保存对应中文问题；`build.js` 为题集生成脚本。评测前应统一参与比较的语料范围、检索参数和答案协议。
 
-问题内容、证据邮件与判定要素见[Enron 航空合作问答题集](../README.md)。
+问题内容、证据邮件与判定要素见[Enron 航空合作问答题集](question_design.md)。

@@ -1,4 +1,4 @@
-# Enron 全量预处理与建库候选
+# Enron 数据预处理与建库范围
 
 > 记录日期：2026-09-08
 >
@@ -68,7 +68,7 @@ maildir/dasovich-j/california_crisis__press/ 46 封
 
 日志已经出现社区报告 JSON 控制字符警告，导致部分社区报告未生成；上一轮日志最后停在 text-unit embedding，`context.json` 为空，不能把现有 parquet/LanceDB 中间产物当作已验收结果。需要恢复或重跑索引，确认所有工作流有完成标记，并检查异常是否影响查询。
 
-题目设计包括主问题 CA01（25 封证据邮件）和同一 66 封分母下的 CC 题组；另外已运行 CA02 和 CA03 的 Graph/Vector 对照。详细问题、证据和展示顺序见[实验进展与 Enron 案例](./实验进展与Enron案例.md)与[CA01 题目设计](../experiments/enron_california_crisis/question_design_CA01.md)。
+题目设计包括主问题 CA01（25 封证据邮件）和同一 66 封分母下的 CC 题组；另外已运行 CA02 和 CA03 的 Graph/Vector 对照。详细问题、证据和展示顺序见[实验进展与 Enron 案例](./实验结果与Enron案例.md)与[CA01 题目设计](../experiments/enron_california_crisis/question_design_CA01.md)。
 
 ## 4. 下一步验收
 

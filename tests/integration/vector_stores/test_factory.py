@@ -2,7 +2,7 @@
 # Licensed under the MIT License
 """VectorStoreFactory Tests.
 
-These tests will test the VectorStoreFactory class and the creation of each vector store type that is natively supported.
+Test local LanceDB creation and custom vector-store registration.
 """
 
 import pytest
@@ -11,14 +11,10 @@ from graphrag_vectors import (
     VectorStoreFactory,
     VectorStoreType,
 )
-from graphrag_vectors.azure_ai_search import AzureAISearchVectorStore
-from graphrag_vectors.cosmosdb import CosmosDBVectorStore
 from graphrag_vectors.lancedb import LanceDBVectorStore
 
 # register the defaults, since they are lazily registered
 VectorStoreFactory().register(VectorStoreType.LanceDB, LanceDBVectorStore)
-VectorStoreFactory().register(VectorStoreType.AzureAISearch, AzureAISearchVectorStore)
-VectorStoreFactory().register(VectorStoreType.CosmosDB, CosmosDBVectorStore)
 
 
 def test_create_lancedb_vector_store():
@@ -28,36 +24,6 @@ def test_create_lancedb_vector_store():
     vector_store = VectorStoreFactory().create(VectorStoreType.LanceDB, kwargs)
     assert isinstance(vector_store, LanceDBVectorStore)
     assert vector_store.index_name == "vector_index"
-
-
-@pytest.mark.skip(reason="Azure AI Search requires credentials and setup")
-def test_create_azure_ai_search_vector_store():
-    kwargs = {
-        "url": "https://test.search.windows.net",
-        "api_key": "test_key",
-        "index_name": "test_collection",
-    }
-    vector_store = VectorStoreFactory().create(
-        VectorStoreType.AzureAISearch,
-        kwargs,
-    )
-    assert isinstance(vector_store, AzureAISearchVectorStore)
-
-
-@pytest.mark.skip(reason="CosmosDB requires credentials and setup")
-def test_create_cosmosdb_vector_store():
-    kwargs = {
-        "connection_string": "AccountEndpoint=https://test.documents.azure.com:443/;AccountKey=test_key==",
-        "database_name": "test_db",
-        "index_name": "test_collection",
-    }
-
-    vector_store = VectorStoreFactory().create(
-        VectorStoreType.CosmosDB,
-        kwargs,
-    )
-
-    assert isinstance(vector_store, CosmosDBVectorStore)
 
 
 def test_register_and_create_custom_vector_store():
@@ -94,8 +60,6 @@ def test_create_unknown_vector_store():
 def test_is_supported_type():
     # Test built-in types
     assert VectorStoreType.LanceDB in VectorStoreFactory()
-    assert VectorStoreType.AzureAISearch in VectorStoreFactory()
-    assert VectorStoreType.CosmosDB in VectorStoreFactory()
 
     # Test unknown type
     assert "unknown" not in VectorStoreFactory()

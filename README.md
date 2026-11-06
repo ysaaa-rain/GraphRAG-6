@@ -19,9 +19,10 @@ PathFusionRAG 对 BM25 词项匹配、Dense 检索与有限跳数图路径进行
 | `graphrag6-retrieval/` | 自定义检索算法、证据记录与算法测试 |
 | `packages/` | Microsoft GraphRAG 引擎及运行组件 |
 | `scripts/` | 数据处理、模型服务和评测脚本 |
-| `experiments/` | 实验配置、问题与证据标注 |
+| [`experiments/`](experiments/README.md) | 实验配置、问题、原文证据与判读记录 |
 | `docs/` | 方法、运行说明、数据来源与结果汇总 |
-| `tests/` | 引擎测试和固定样例 |
+| `presentations/` | 系统方法汇报演示文稿 |
+| [`tests/`](tests/README.md) | 本地索引与检索相关的引擎关键测试、固定样例 |
 
 ## 数据与实验
 
@@ -40,7 +41,7 @@ GraphRAG-Bench Medical 完成 **2,062 道问题**的 GraphRAG 查询、generatio
 ## 文档
 
 - [系统方法与实现](docs/GraphRAG方法调研与系统实现细节.md)
-- [实验与当前进展](docs/实验进展与Enron案例.md)
+- [实验与当前进展](docs/实验结果与Enron案例.md)
 - [GraphRAG-Bench 评测](docs/GraphRAG-Bench全量评测说明.md)
 - [Enron 应用与数据](docs/实际应用领域方案.md)
 - [评测设计](docs/评测方案.md)

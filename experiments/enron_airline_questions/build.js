@@ -1,4 +1,4 @@
-// Enron 个人问题集 v2（全量语料版）构建脚本
+// Enron 航空合作与注册流程问答题集构建脚本
 // 2 题：E1 = 宽口径 multi_hop（BA vs Continental 资源取舍全景）
 //       K1 = 精确窄口径 graph_limited 对照（单封 ICE 注册邮件）
 // 运行: node build.js   -> 生成 questions_zh.jsonl / questions_en.jsonl

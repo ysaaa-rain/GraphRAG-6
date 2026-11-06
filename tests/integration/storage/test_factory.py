@@ -2,10 +2,9 @@
 # Licensed under the MIT License
 """StorageFactory Tests.
 
-These tests will test the StorageFactory class and the creation of each storage type that is natively supported.
+Test local file, memory and custom storage creation.
 """
 
-import sys
 
 import pytest
 from graphrag_storage import (
@@ -15,42 +14,8 @@ from graphrag_storage import (
     create_storage,
     register_storage,
 )
-from graphrag_storage.azure_blob_storage import AzureBlobStorage
-from graphrag_storage.azure_cosmos_storage import AzureCosmosStorage
 from graphrag_storage.file_storage import FileStorage
 from graphrag_storage.memory_storage import MemoryStorage
-
-# cspell:disable-next-line well-known-key
-WELL_KNOWN_BLOB_STORAGE_KEY = "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;"
-# cspell:disable-next-line well-known-key
-WELL_KNOWN_COSMOS_CONNECTION_STRING = "AccountEndpoint=https://127.0.0.1:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
-
-
-@pytest.mark.skip(reason="Blob storage emulator is not available in this environment")
-def test_create_blob_storage():
-    config = StorageConfig(
-        type=StorageType.AzureBlob,
-        connection_string=WELL_KNOWN_BLOB_STORAGE_KEY,
-        base_dir="testbasedir",
-        container_name="testcontainer",
-    )
-    storage = create_storage(config)
-    assert isinstance(storage, AzureBlobStorage)
-
-
-@pytest.mark.skipif(
-    not sys.platform.startswith("win"),
-    reason="cosmosdb emulator is only available on windows runners at this time",
-)
-def test_create_cosmosdb_storage():
-    config = StorageConfig(
-        type=StorageType.AzureCosmos,
-        connection_string=WELL_KNOWN_COSMOS_CONNECTION_STRING,
-        database_name="testdatabase",
-        container_name="testcontainer",
-    )
-    storage = create_storage(config)
-    assert isinstance(storage, AzureCosmosStorage)
 
 
 def test_create_file():
