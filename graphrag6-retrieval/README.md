@@ -5,15 +5,15 @@
 
 ## 内容
 
-| 文件 | 行数 | 作用 |
-|---|---:|---|
-| `graphrag6_retrieval/retrieval.py` | 985 | BM25、实体图邻接、Personalized PageRank、受跳数约束的路径搜索、path/evidence recall 指标 |
-| `graphrag6_retrieval/custom_search.py` | 142 | 三种自定义检索的组装，复用 GraphRAG 的向量库、embedding 和 completion |
-| `graphrag6_retrieval/typing.py` | 111 | `SearchMethod` / `SearchType` / `SearchResult` / `RetrievalTrace` |
-| `graphrag6_retrieval/trace_store.py` | 51 | trace 追加写入 `<index>/output/retrieval_traces.parquet` |
+| 文件 | 作用 |
+|---|---|
+| `graphrag6_retrieval/retrieval.py` | BM25、实体图邻接、Personalized PageRank、有限跳数图路径、path/evidence recall |
+| `graphrag6_retrieval/custom_search.py` | GraphRAG 向量索引与 LLM 适配 |
+| `graphrag6_retrieval/typing.py` | 检索方法、结果及 trace 数据契约 |
+| `graphrag6_retrieval/trace_store.py` | Parquet 形式的查询证据记录 |
 
 界面上可切换的三种方法就来自这里：**LightRAG 风格（低层实体/关系 + 高层社区）**、
-**HippoRAG 2 风格（实体种子 + 加权 PPR 多跳）**、**PathFusionRAG（BM25 + Dense + 约束图路径融合）**。
+**HippoRAG 2 风格（实体种子 + 加权 PPR 多跳）**、**PathFusionRAG（BM25 + Dense + 有限跳数图路径加权融合）**。
 
 ## 代码来源与实现边界
 
@@ -29,7 +29,7 @@
 from graphrag6_retrieval import GraphRetriever, SearchMethod, save_trace
 
 retriever = GraphRetriever(entities=..., relationships=..., text_units=...)
-bundle = retriever.retrieve("问题", SearchMethod.HYBRID_PATH)   # 纯图检索，不需要 embedding
+bundle = retriever.retrieve("问题", SearchMethod.HYBRID_PATH)   # 无向量资源时使用 BM25 与图路径分数
 save_trace(index_dir, bundle.trace)
 ```
 
@@ -39,7 +39,7 @@ save_trace(index_dir, bundle.trace)
 
 ```powershell
 cd graphrag6-retrieval
-python -m unittest discover -s tests -t . -v
+uv run --group dev pytest -q tests
 ```
 
-单元测试使用固定的实体、关系和文本数据，不需要远程 LLM 或 embedding 服务。
+测试使用固定的实体、关系和文本数据，不需要远程 LLM 或 embedding 服务。
