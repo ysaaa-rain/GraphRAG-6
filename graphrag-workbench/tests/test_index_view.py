@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -34,7 +35,8 @@ from index_view import (  # noqa: E402
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-REAL_INDEX = REPO_ROOT / "experiments" / "outputs" / "enron_q001"
+TEST_INDEX = os.environ.get("GRAPHRAG_TEST_INDEX")
+REAL_INDEX = Path(TEST_INDEX).expanduser().resolve() if TEST_INDEX else None
 
 
 def build_fake_index(root: Path) -> Path:
@@ -229,7 +231,7 @@ class TestFailedWorkflows(unittest.TestCase):
         self.assertEqual(failed_workflows(None), ())
 
 
-@unittest.skipUnless(REAL_INDEX.exists(), "enron_q001 索引不存在")
+@unittest.skipUnless(REAL_INDEX is not None and REAL_INDEX.exists(), "未设置可用的 GRAPHRAG_TEST_INDEX")
 class TestRealIndex(unittest.TestCase):
     """对真实索引断言已知规模，保证阶段映射没有漂移。"""
 
