@@ -2,7 +2,7 @@
 
 ## 1. 文档目的
 
-本文档规定本项目使用 GraphRAG-Bench 对 GraphRAG 系统进行正式评测的对象、数据、指标、运行方式和结果要求。本文档只记录项目事实、操作规范和评测结果，不记录对话内容或内部推理过程。
+本文档说明 GraphRAG-Bench 的数据、指标、运行方式和 Medical 全量评测结果。
 
 ## 2. 评测范围
 
@@ -69,7 +69,7 @@ Local Search 查询
 DeepSeek V4 Flash 生成答案
 ```
 
-本阶段先得到可复现的 GraphRAG 结果。它不能单独证明 Graph 优于 Vector；后续必须在相同语料、相同题目、相同 DeepSeek 和相同 Qwen 配置下补跑 Vector baseline，再进行配对比较。
+Medical 中的数值是 GraphRAG Local 在官方评测协议下的结果。跨方法分析使用相同问题和统一评价协议，另见[评测方案](./评测方案.md)。
 
 ### 3.4 评测运行环境
 
@@ -141,7 +141,7 @@ DeepSeek 的分阶段请求数和 token 统计另见[DeepSeek API 使用消耗�
 
 ### 5.2 自建案例集才需要标注
 
-后续为了展示 Graph 与 Vector 的真实差异，项目会建立独立的自建案例集。每道题建议至少包含：
+Enron 的自建案例集包含问题、答案、证据和图路径字段。典型记录结构如下：
 
 ```json
 {
@@ -187,7 +187,7 @@ experiments/outputs/
     └── graphrag_local_summary.json
 ```
 
-为便于小组成员直接复现实验，当前仓库已同步 GraphRAG-Bench 的官方数据文件和官方评测源码，位置为 `data/raw/benchmarks/GraphRAG-Benchmark/`。这些是固定的、对评测有直接用途的项目输入，不应由成员随意修改。GraphRAG 运行产生的索引、向量库、缓存、日志、完整问答输出和 Enron 原始压缩包仍属于本地运行产物，按 `.gitignore` 规则不进入 Git；代码、配置、数据来源说明、运行命令和汇总结果说明进入 Git。
+GraphRAG-Bench 使用固定版本的官方数据与评测协议（commit `fdbab5959b18c96532580877ffe27d112bccc0ec`）。数据准备脚本位于 `scripts/prepare_graphrag_benchmark.py`，索引配置位于 `experiments/benchmark_medical/` 和 `experiments/benchmark_novel/`；结果汇总与评价方法在本文记录。
 
 每条问答结果至少保留：
 
@@ -199,7 +199,7 @@ experiments/outputs/
 - 延迟、token 和错误信息
 - 指标明细
 
-## 7. 执行顺序和验收标准
+## 7. 实验流程与结果整理
 
 ```text
 1. 固定官方 benchmark commit 与文件哈希
@@ -216,16 +216,16 @@ experiments/outputs/
 12. 进行配对对比和失败归因
 ```
 
-本阶段完成的最低验收条件：
+评测结果整理包括：
 
-- Novel 2010 道题和 Medical 2062 道题均有结果记录，或明确记录每一道失败原因；
+- 对各数据集按题目 ID 保存运行状态和可用的评价指标；
 - 四种题型均有分组结果；
 - 生成、检索、索引三类指标分别有结果文件；
 - 评测过程可以从断点继续，不因单题 API 错误丢失全量进度；
 - 结果中明确区分 GraphRAG 当前绝对效果与后续 Vector 对照结论；
 - 文档、配置和代码描述保持一致。
 
-## 8. 当前进度
+## 8. Medical 实验结果
 
 - [x] 固定 GraphRAG-Bench 官方仓库版本
 - [x] 核对 Novel/Medical 官方题目规模和字段
@@ -250,11 +250,11 @@ Medical 官方评测汇总如下，数值直接来自被忽略的运行产物，
 | 全部题型 | 2062 | 0.363293 | 0.081630 | 0.540099 | 0.315056 | 0.662225 | 0.568109 |
 
 工程运行统计：2,062 道均返回非空答案；查询阶段平均延迟 4.735 秒/题；记录到的 prompt token 合计 19,681,955，output token 合计 1,127,033。generation/retrieval 指标中的不可计算项以 `null` 保存，汇总均值跳过这些项。
-- [ ] Novel GraphRAG 建库（首次调用 DeepSeek 时因账户余额不足中止）
-- [ ] 全量生成答案
-- [ ] 全量生成、检索、索引评测
-- [ ] Vector baseline 对照
+- Novel 在 2026-09-09 的初始运行发生过 DeepSeek 额度异常；该条为历史运行记录。
+- 查询输出和评测使用固定的题目、模型和结果字段。
+- 评价指标包括生成质量、检索质量与索引结构。
+- Enron 与六个公开数据集的跨方法比较另见[项目实验进展](./项目当前状态与Enron展示交接.md)。
 
-## 9. 下一步
+## 9. 运行记录
 
-Medical generation/retrieval 已完成并保留完整明细、汇总和索引指标。Novel 建库首次调用 DeepSeek 时返回 `Insufficient Balance`，当前等待 API 账户补充额度或更换可用密钥；额度恢复后从 Novel 建库阶段继续。每个阶段均保留可恢复的明细文件与汇总文件。
+Medical generation/retrieval 已完成并保存全量指标汇总和索引结构统计。Novel 在 2026-09-09 的首次建库调用返回 `Insufficient Balance`，相关异常已记录于实验历史中。
