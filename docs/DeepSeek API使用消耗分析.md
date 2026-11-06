@@ -127,7 +127,7 @@ Enron 本轮只使用 66 封邮件作为可控展示分母，不代表 517,401 �
 
 ### 3.6 Novel：只发生了失败的额度检查请求
 
-Novel 尚未正式建库。日志记录：
+在 2026-09-09 的统计截止时，Novel 首次建库请求失败。该次日志记录：
 
     attempted_request_count: 1
     successful_response_count: 0
@@ -142,7 +142,7 @@ Novel 尚未正式建库。日志记录：
 2. Medical 建库是第二大消耗阶段：约 619.6 万 token，主要集中在实体/关系抽取、描述汇总和社区报告。
 3. 官方自动评测还会产生额外 DeepSeek 消耗：generation 正常路径约 7,428 次 judge 调用，retrieval 正常路径约 6,186 次 judge 调用；本次没有 token usage 记录，因此未纳入 2,787.8 万已记录 token。
 4. Enron 66 封试验约 87.3 万 token；它与 Medical/Novel benchmark 分开统计。
-5. Novel 当前只失败 1 次，没有有效生成结果；后续额度恢复前不再自动重试。
+5. Novel 在本次统计区间内仅记录 1 次额度校验失败请求，未产生可统计的成功调用 token。
 6. Qwen embedding 在本机运行，不计入 DeepSeek API；官方评测阶段的 Qwen 语义相似度也不计入 DeepSeek API。
 
 ## 5. 后续成本记录要求
