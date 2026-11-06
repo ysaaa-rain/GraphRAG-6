@@ -689,10 +689,10 @@ def render_home_tab() -> None:
         ),
         (
             "PathFusionRAG",
-            "词项 + Dense + 约束路径",
-            "候选文本先经 lexical/dense 召回，再用最大 2-hop BFS 做结构约束",
+            "词项 + Dense + 有限跳数路径",
+            "计算最大 2-hop 的路径邻近度，与 lexical/dense 分数共同排序候选文本",
             "既要精确，又要跨实体和可解释路径",
-            "权重、top-k、hop 仍需固定验证集校准",
+            "图结构质量和路径覆盖会影响最终排序",
         ),
     )
     method_html = []
@@ -715,12 +715,12 @@ def render_home_tab() -> None:
         """
         <div class="pf-formula">
             <div class="equation">Score(text) = 0.35 · S<sub>BM25</sub> + 0.35 · S<sub>Dense</sub> + 0.30 · S<sub>Path</sub></div>
-            <div class="formula-note">当前实现的可解释默认权重；正式结论仍需在固定验证集上完成消融和校准。</div>
+            <div class="formula-note">当前检索策略采用固定融合权重，便于比较词项、语义与图路径三类检索信号。</div>
         </div>
         <div class="pf-signal-grid">
             <article class="pf-signal"><div class="pf-signal-no">01 / LEXICAL</div><h4>BM25 精确匹配</h4><p>保留人名、机构名、事件名等直接词项证据，避免图扩张掩盖原文中的关键事实。</p></article>
             <article class="pf-signal"><div class="pf-signal-no">02 / SEMANTIC</div><h4>Dense 语义召回</h4><p>补回没有共享关键词、但语义表达一致的文本；复用已有 GraphRAG 向量资源。</p></article>
-            <article class="pf-signal"><div class="pf-signal-no">03 / STRUCTURE</div><h4>Constrained Graph Path</h4><p>对 seed 到候选文本实体运行最大 2-hop BFS；路径既是多跳信号，也是证据可信度的门控。</p></article>
+            <article class="pf-signal"><div class="pf-signal-no">03 / STRUCTURE</div><h4>Constrained Graph Path</h4><p>对 seed 到候选文本实体运行最大 2-hop BFS；路径作为多跳相关性信号参与证据排序，并随检索结果保存。</p></article>
         </div>
         <div class="pf-flow">
             <div class="pf-flow-step"><strong>Query</strong><span>问题输入</span></div><div class="pf-flow-arrow">→</div>
@@ -729,7 +729,7 @@ def render_home_tab() -> None:
             <div class="pf-flow-step"><strong>≤ 2-hop BFS</strong><span>seed ↔ evidence entity</span></div><div class="pf-flow-arrow">→</div>
             <div class="pf-flow-step"><strong>Fusion + Trace</strong><span>证据、路径、子图交给 LLM</span></div>
         </div>
-        <div class="pf-story"><p><strong>和 HippoRAG 2 的关键区别：</strong>HippoRAG 把图当作 propagation，让相关性在全图继续传播；PathFusionRAG 把图当作 constrained evidence path，文本首先要有 lexical / semantic 候选资格，再检查是否能通过有限长度路径连接到 query seed。因此它保留多跳能力，同时降低 PPR 无限扩散图噪声的风险。</p></div>
+        <div class="pf-story"><p><strong>和 HippoRAG 2 的关键区别：</strong>HippoRAG 把图当作 propagation，让相关性在全图继续传播；PathFusionRAG 对种子实体与候选证据之间的有限跳数路径单独评分，再和词项、向量信号加权融合。图路径有助于解释跨实体关联，而没有路径的文本仍可由其他信号召回。</p></div>
         """
     )
 
