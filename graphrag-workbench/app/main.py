@@ -23,6 +23,7 @@ import graphrag.api as api
 import pandas as pd
 import streamlit as st
 import trace_view
+from query_runner import run_parallel
 from graphrag.api import build_index
 from graphrag.config.load_config import load_config
 from graphrag6_retrieval import (
@@ -47,7 +48,7 @@ from index_view import (
 
 st.set_page_config(page_title="PathFusionRAG 研究工作台", page_icon="⌘", layout="wide")
 
-# 默认指向仓库里现成的索引；用绝对路径，免得换个目录启动就找不到。
+# 本地默认索引路径；也可通过 GRAPHRAG_INDEX 指定其他已构建的索引。
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INDEX = REPO_ROOT / "experiments" / "outputs" / "enron_q001"
 INDEX_DIR = Path(os.environ.get("GRAPHRAG_INDEX") or DEFAULT_INDEX).resolve()
@@ -1045,12 +1046,9 @@ def render_search_tab() -> None:
         return
     with st.spinner("正在运行所选方法并整理证据链…"):
         results = asyncio.run(
-            asyncio.gather(
-                *(
-                    run_search(method, query, str(INDEX_DIR), retriever)
-                    for method in methods
-                ),
-                return_exceptions=True,
+            run_parallel(
+                methods,
+                lambda method: run_search(method, query, str(INDEX_DIR), retriever),
             )
         )
     result_tabs = st.tabs([
@@ -1063,11 +1061,6 @@ def render_search_tab() -> None:
 
 def render_evidence(trace: object) -> None:
     """Render trace fields, recall status, source evidence and highlighted subgraph."""
-    stats = trace_view.summary(trace)
-    stat_columns = st.columns(min(max(len(stats), 1), 6))
-    for column, (key, value) in zip(stat_columns, stats.items(), strict=False):
-        column.metric(key, value)
-
     hint = trace_view.evidence_hint(trace)
     if hint:
         st.info(hint)
