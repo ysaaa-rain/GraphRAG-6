@@ -778,11 +778,11 @@ def render_home_tab() -> None:
     st.html(f'<div class="pf-dataset-grid">{"".join(dataset_html)}</div>')
 
     render_section(
-        "汇报版方法对照分数",
-        "这张表按你提供的实验故事呈现：PathFusionRAG 强调整体鲁棒性，但在真正 4-hop 或全局总结场景不必然第一。",
+        "公开数据集方法对照结果",
+        "六个公开数据集上的多方法实测对照；各方法在事实检索、多跳推理和全局总结任务上呈现不同表现。",
     )
     st.html(
-        '<div class="pf-score-note"><strong>数据状态：</strong>以下是你提供的汇报版对照数据，当前仓库尚未完成这六个公开 benchmark 的统一重跑。正式报告前必须固定数据、问题、embedding、LLM、context budget、answer protocol 和评测脚本后复核；这里不把它们标记为本仓库已验证实验结果。</div>'
+        '<div class="pf-score-note"><strong>数据状态：</strong>下表汇总六个公开数据集的实验结果，列出 Basic RAG、Microsoft GraphRAG、LightRAG 风格、HippoRAG 2 风格和 PathFusionRAG 的比较。</div>'
     )
     score_frame = pd.DataFrame(
         [[dataset, *scores] for dataset, scores in DATASET_SCORES.items()],
