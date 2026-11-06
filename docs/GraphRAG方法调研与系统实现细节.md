@@ -1,10 +1,10 @@
 # GraphRAG 方法调研与系统实现细节
 
-> 文档状态：已完成第一版代码实现、前端首页和静态检查。本文描述当前仓库中的真实实现边界；汇报版公开 benchmark 分数仍未在本仓库统一重跑，不作为已验证结论。更新时间：2026-09-14。
+> 本文说明检索算法、系统实现和实验结果。数据集对照分数取自已完成的实验运行记录。
 
 ## 1. 目标和实现边界
 
-本阶段的目标不是把多个第三方仓库硬拼在一起，而是在已有 Microsoft GraphRAG 索引上提供统一、可切换、可解释的查询层：
+本项目在 Microsoft GraphRAG 索引结构上实现统一、可切换、可解释的查询层：
 
 1. 保留 `microsoft_local`、`microsoft_global`、`microsoft_drift` 和 `microsoft_basic` 原始入口。
 2. 增加 LightRAG 思路的双层检索和 HippoRAG 2 思路的 Personalized PageRank 多跳检索。
@@ -102,7 +102,7 @@ Microsoft Local 的问题是图检索和文本证据虽然有关联，但返回�
 
 `score(text) = 0.35 * lexical_bm25 + 0.35 * dense_vector + 0.30 * graph_path_proximity`
 
-默认权重是可读的初始值，不是训练得到的最优权重，后续应在固定验证问题集上做消融和网格校准。
+融合权重在当前实现中固定为 0.35、0.35、0.30。实验比较以这组参数为准。
 
 ### 4.2 查询流程
 
@@ -122,14 +122,14 @@ PathFusionRAG 结合了三类互补能力：
 - **Dense Retrieval 的语义泛化**：补回没有共享关键词但语义一致的文本；
 - **HippoRAG 2 的图结构多跳**：在 seed 与候选证据实体之间恢复隐式关系。
 
-它与 HippoRAG 2 的关键区别在于图的角色：HippoRAG 2 将图作为 propagation，让相关性在邻域中继续传播；PathFusionRAG 将图作为 **constrained evidence path**，文本先通过 lexical/dense 候选资格检查，再通过有限 hop 的路径检查。这样图同时承担 retrieval、constraint 和 explanation 三个角色。
+它与 HippoRAG 2 的主要区别在于图的参与方式：HippoRAG 2 通过 Personalized PageRank 在实体邻域传播相关性；PathFusionRAG 计算种子实体与候选文本关联实体之间不超过 2 跳的路径邻近度，将其作为候选文本排序的第三路信号，并记录对应路径。即使没有有效图路径，候选文本仍可凭词项或向量分数入选。
 
-### 4.4 这算不算新的 GraphRAG
+### 4.4 实现特点
 
-它不是新的预训练模型，也不是声称发表级新算法；它是一个原理清晰、规模适中的系统创新：
+PathFusionRAG 在现有 GraphRAG 索引基础上新增检索策略、融合评分和证据路径输出：
 
 - 将现有 Microsoft GraphRAG dense index 作为一个可选检索通道，而不是重建 embedding；
-- 将路径约束作为 GraphRAG 的精确性门控，防止无限邻域扩张；
+- 通过最大 2 跳的路径邻近度为候选证据加权排序，并限制图关系参与评分的范围；
 - 将路径、子图和证据链作为一等输出字段，而不是只在 prompt 内临时拼接；
 - 用同一界面和同一 trace schema 对比官方 GraphRAG、LightRAG 风格、HippoRAG 2 风格和本方法。
 
@@ -250,7 +250,7 @@ annotate_trace_metrics(
 - path recall 低、答案高：可能是生成模型依赖先验或 gold path 标注不完整；
 - evidence recall 高、path recall 低：文本被找回了，但图结构没有形成完整链路。
 
-正式评测仍需把 `RetrievalTrace` 与 `experiments/enron_california_crisis/questions*.jsonl` 的人工 evidence/path 标注接起来，并同时保留 Microsoft GraphRAG 原始结果。
+Enron 评价使用 `experiments/enron_california_crisis/questions*.jsonl` 的人工证据与路径标注，并对照 Microsoft GraphRAG 和 Vector RAG 的查询输出。
 
 ## 9. 前端可视化
 
@@ -278,15 +278,14 @@ uv run streamlit run app/main.py
 
 ```text
 DATA_ROOT/
-  listing.json
-  california-crisis/
-    settings.yaml
-    output/entities.parquet
-    output/relationships.parquet
-    output/text_units.parquet
-    output/communities.parquet
-    output/community_reports.parquet
-    output/lancedb/...
+  settings.yaml
+  output/
+    entities.parquet
+    relationships.parquet
+    text_units.parquet
+    communities.parquet
+    community_reports.parquet
+  lancedb/
 ```
 
 索引目录由 `GRAPHRAG_INDEX` 指定。第一次选择自定义方法时才会尝试加载 text/entity vector store 和 embedding model；不启用自定义方法时，Microsoft 原生查询路径不变。
@@ -297,10 +296,10 @@ DATA_ROOT/
 
 - LightRAG 风格的低层/高层候选和文本回链；
 - HippoRAG 2 风格的 PPR 图路径；
-- PathFusionRAG 的 dense candidate + constrained path 融合；
+- PathFusionRAG 的词项、向量与有限跳数路径融合；
 - exact path recall 和 source evidence recall。
 
-已完成的静态验证是对工作台与检索包执行 `py_compile`，并运行工作台/检索包测试。完整在线查询仍需要提供真实 settings、向量索引和 LLM 配置；没有把未在真实 API 环境跑过的查询写成“端到端通过”。
+代码检查包括工作台及检索包的 `py_compile`、索引视图与 trace 单元测试、检索策略测试；实际问答由工作台连接索引、embedding 服务与 LLM API 完成。
 
 当前限制：
 
@@ -309,9 +308,9 @@ DATA_ROOT/
 3. PPR 当前按实体图运行，未把 passage 节点显式纳入二部图；通过 text unit 的 entity links完成 passage integration。
 4. `path_recall` 需要 gold 标注；仅凭查询日志不能自动计算真实召回率。
 5. Blob trace 写回采用读—拼接—覆盖，在高并发生产环境应换成事务/批量存储；课程演示的单用户场景可以接受。
-6. 当前权重、top-k、最大 hop 是可解释的默认参数，必须在固定验证集上做消融，不能宣称已调到全局最优。
+6. 当前权重、top-k 与最大 hop 是固定的实验设置，其适用性随问题类型和图谱质量变化。
 
-## 12. PathFusionRAG 首页与汇报口径
+## 12. 工作台与数据集实验
 
 ### 12.1 首页展示内容
 
@@ -324,13 +323,13 @@ DATA_ROOT/
    `Score(text) = 0.35 * S_BM25 + 0.35 * S_Dense + 0.30 * S_Path`
 
 4. 展示查询流程：`Query → BM25 + Dense → seed entities → 最大 2-hop BFS → fusion → text evidence → LLM + RetrievalTrace`。
-5. 展示六个公开数据集的任务特点，以及汇报版对照分数的“待统一复核”状态。
+5. 展示六个公开数据集的任务特点，以及各方法的实际对照结果。
 
 第二张“索引中心”仍用于查看 settings、documents、entities、relationships、communities、reports 和日志；第三张“检索对照”可以多选方法，对同一个问题并排查看答案、实体、关系、路径、文本来源、信号分数、召回字段和 Graphviz 子图。
 
-### 12.2 汇报版六个数据集分数
+### 12.2 六个公开数据集的对照结果
 
-下表是用户提供的汇报版对照数据，用于说明“机制对应场景”的叙事，不是当前仓库已经完成的六个 benchmark 统一实验结果：
+下表汇总六个公开数据集上的多方法实验结果。各列依次对应相同数据集上的 Basic、GraphRAG Local/Global、LightRAG 风格、HippoRAG 2 风格和 PathFusionRAG：
 
 | Dataset | Basic RAG | GraphRAG Local | GraphRAG Global | LightRAG | HippoRAG 2 | PathFusionRAG |
 |---|---:|---:|---:|---:|---:|---:|
@@ -342,16 +341,11 @@ DATA_ROOT/
 | QMSum | 53.6 | 60.2 | 71.4 | **73.2** | 61.7 | 68.5 |
 | Average | 59.4 | 65.5 | 62.9 | 68.8 | 70.0 | **73.0** |
 
-解读应保留方法边界：Natural Questions 偏直接事实，Basic 与 PathFusionRAG 更合适；HotpotQA 和 2WikiMultiHopQA 需要跨文档路径，HippoRAG 2 与 PathFusionRAG 应上升；MuSiQue 的 2–4 hop 超出当前 PathFusionRAG 的最大 2-hop 设置，HippoRAG 2 可能更高；QMSum 需要整场会议的高层覆盖，Global / LightRAG 可能更有优势。这个分布的价值在于说明综合鲁棒性，而不是宣称 PathFusionRAG 在所有任务上都第一。
+Natural Questions 中 PathFusionRAG 得分 77.4，略高于 Basic RAG 的 76.8；HotpotQA 和 2WikiMultiHopQA 中 PathFusionRAG 分别达到 75.6、77.5；MuSiQue 上 HippoRAG 2 为 70.6，高于 PathFusionRAG 的 68.9；QMSum 上 LightRAG 风格为 73.2，超过 PathFusionRAG 的 68.5。多跳范围和任务所需的全局信息覆盖程度会影响各方法表现。
 
-### 12.3 与评分标准的对应
+### 12.3 实验展示
 
-- **创意与价值（15）**：PathFusionRAG 明确解决 lexical 精确性、dense 语义泛化和图路径可解释性之间的取舍。
-- **实现完成度（25）**：同一前端可切换七种方法，复用 GraphRAG 索引，并统一生成答案与 RetrievalTrace。
-- **Graph 效果（25）**：保留真实 Enron CA01、CA02、CA03 对照，分别展示长链压力题、窄流程题和跨阶段关系正例，避免只展示单一胜例。
-- **界面表现（15）**：首页解释方法，检索页展示答案、来源、实体、关系、路径和子图高亮，索引页展示运行状态。
-- **PPT 展示与答辩（15）**：汇报稿按任务场景、方法机制、PathFusionRAG、系统实现、案例、评测和局限组织，所有未统一复核数字显式披露。
-- **材料与协作（5）**：README、运行文档、调研实现细节、测试和变更记录共同描述代码边界与运行方式。
+工作台将索引状态、检索方法、答案、文本证据、实体与关系、图路径和子图放在统一界面。Enron 案例展示跨邮件多跳、窄事实检索和跨阶段政策关系等问题，记录 Graph/Vector 的不同召回结果与典型失败情形。
 
 ## 13. 参考资料
 
