@@ -403,6 +403,7 @@ def index_retriever(index_dir: str) -> GraphRetriever:
 
 
 def finish_native(
+    index_dir: str,
     query: str,
     method: SearchMethod,
     answer: object,
@@ -417,7 +418,7 @@ def finish_native(
             trace = trace_from_context(
                 query=query, method=method, context=data, retriever=retriever
             )
-            save_trace(INDEX_DIR, trace)
+            save_trace(index_dir, trace)
         except Exception as error:  # noqa: BLE001 - 证据链失败不挡住答案
             st.warning(f"证据链生成/落盘失败：{type(error).__name__}: {error}")
     return answer, data, trace
@@ -443,7 +444,7 @@ async def run_search(
             response_type=RESPONSE_TYPE,
             query=query,
         )
-        return finish_native(query, method, answer, context, retriever)
+        return finish_native(index_dir, query, method, answer, context, retriever)
     if method is SearchMethod.MICROSOFT_LOCAL:
         answer, context = await api.local_search(
             config=config,
@@ -457,7 +458,7 @@ async def run_search(
             response_type=RESPONSE_TYPE,
             query=query,
         )
-        return finish_native(query, method, answer, context, retriever)
+        return finish_native(index_dir, query, method, answer, context, retriever)
     if method is SearchMethod.MICROSOFT_DRIFT:
         answer, context = await api.drift_search(
             config=config,
@@ -470,7 +471,7 @@ async def run_search(
             response_type=RESPONSE_TYPE,
             query=query,
         )
-        return finish_native(query, method, answer, context, retriever)
+        return finish_native(index_dir, query, method, answer, context, retriever)
     if method is SearchMethod.MICROSOFT_BASIC:
         answer, context = await api.basic_search(
             config=config,
@@ -478,7 +479,7 @@ async def run_search(
             response_type=RESPONSE_TYPE,
             query=query,
         )
-        return finish_native(query, method, answer, context, retriever)
+        return finish_native(index_dir, query, method, answer, context, retriever)
 
     # 三个项目方法：复用 graphrag6-retrieval 的检索和生成实现。
     text_store, entity_store, embedding_model = create_embedding_resources(config)
@@ -499,7 +500,7 @@ async def run_search(
         model_params=model_params,
     )
     try:
-        save_trace(INDEX_DIR, bundle.trace)
+        save_trace(index_dir, bundle.trace)
     except Exception as error:  # noqa: BLE001 - trace 落盘失败不挡住答案
         st.warning(f"检索 trace 落盘失败：{type(error).__name__}: {error}")
     return answer, bundle.context, bundle.trace
@@ -928,10 +929,12 @@ def render_build_tab() -> None:
         else:
             st.success("建索引完成，产物已刷新。")
             st.cache_data.clear()
+            st.cache_resource.clear()
             st.rerun()
 
     if st.button("清缓存并刷新", use_container_width=False):
         st.cache_data.clear()
+        st.cache_resource.clear()
         st.rerun()
     if snapshot.log_tail:
         with st.expander("查看最近日志", expanded=False):
