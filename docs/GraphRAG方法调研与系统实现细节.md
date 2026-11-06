@@ -9,7 +9,7 @@
 1. 保留 `microsoft_local`、`microsoft_global`、`microsoft_drift` 和 `microsoft_basic` 原始入口。
 2. 增加 LightRAG 思路的双层检索和 HippoRAG 2 思路的 Personalized PageRank 多跳检索。
 3. 增加本项目自己的 `hybrid_path`（用户界面名称为 **PathFusionRAG**）：BM25 词项、已有 GraphRAG dense vector index、图路径邻近度三路融合，并限制最大跳数。
-4. 所有方法都返回统一的 `SearchResult` 和 `RetrievalTrace`，前端可以显示同样的实体—关系—文本证据链，评测脚本可以读取同样的路径字段。
+4. 检索与生成结果在工作台中采用统一字段结构，证据链使用 `RetrievalTrace`，前端可以显示同样的实体—关系—文本证据链，评测脚本可以读取同样的路径字段。
 5. 查询结束后将 trace 追加写入数据集的 `output/retrieval_traces.parquet`，不修改原有 entities、relationships、text_units 和 community reports 表。
 
 这里的 “LightRAG 风格” 和 “HippoRAG 2 风格” 是基于论文机制对当前 GraphRAG schema 的工程适配，不声称是两个项目的官方 reference implementation。这样处理的原因是当前项目已经有完整的 Microsoft GraphRAG 3.1.2 Parquet/LanceDB 产物；直接接入两个不同的完整索引器会引入不同的切分、实体抽取、embedding 和 LLM 条件，无法进行公平对照。
@@ -80,7 +80,7 @@ HippoRAG 2 延续 HippoRAG 的思路，用 LLM 构建知识图谱，再用 Perso
 | Microsoft Local | 具体实体、局部关系、可回溯文本 | 依赖实体向量和局部 seed，可能漏掉隐式多跳 | 保留作官方局部基线 |
 | LightRAG 风格 | 多主题覆盖、低层细节与高层主题同时出现 | 社区扩张噪声，依赖高质量社区报告 | 作为结构化双路候选 |
 | HippoRAG 2 风格 | 多跳、关联记忆、跨实体传播 | 图噪声传播；单事实可能过度扩张 | 作为路径/多跳候选 |
-| PathFusionRAG（本项目） | 需要同时兼顾精确词项、语义相似和可解释路径 | 权重需要在验证集上校准；没有 dense index 时退化为 lexical+graph | 作为默认创新候选，待评测确认 |
+| PathFusionRAG（本项目） | 需要同时兼顾精确词项、语义相似和可解释路径 | 权重需要在验证集上校准；没有 dense index 时退化为 lexical+graph | 项目混合检索方法，已纳入数据集对照 |
 
 理论上不能直接写成“PathFusionRAG 一定优于所有方法”。更严谨的预期是：
 
@@ -233,7 +233,7 @@ ID 解析同时支持稳定 `id`、`human_readable_id`、`short_id` 和 entity t
 交互式查询没有标准答案，所以系统不会把“命中了几条路径”误写成 path recall。`path_recall` 只有在评测适配层传入 gold path 时计算：
 
 ```python
-from rag.retrieval import annotate_trace_metrics
+from graphrag6_retrieval import annotate_trace_metrics
 
 annotate_trace_metrics(
     trace,
