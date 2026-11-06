@@ -17,7 +17,7 @@ Enron Email 使用 CMU 公开邮件归档。已完成 517,401 封邮件的统一
 
 GraphRAG 与 Vector RAG 的首轮对照已经完成，结果文件包括 `comparison_CA01.json`、`comparison_CA02.json`、`comparison_CA03.json` 和 `comparison_CC_66.json`。CA01、CA03 在证据召回方面体现有限的 Graph 优势，CA02 中 Vector 略优。各案例需要结合原文证据解释，而不是只依据最终答案判定。
 
-主问题 CA01 追踪加州电力危机中信息收集、政策沟通和 Direct Access 立法讨论之间的跨邮件关系；其题目、参考答案及证据集合见 [CA01 题目设计](../experiments/enron_california_crisis/question_design_CA01.md)。其他题目见 `experiments/enron_california_crisis/questions.jsonl`。
+主问题 CA01 追踪加州电力危机中信息收集、政策沟通和 Direct Access 立法讨论之间的跨邮件关系；其题目、参考答案及证据集合见 [CA01 题目设计](https://github.com/ysaaa-rain/GraphRAG-6/blob/main/experiments/enron_california_crisis/question_design_CA01.md)。其他题目见 `experiments/enron_california_crisis/questions.jsonl`。
 
 ## 3. GraphRAG-Bench
 
@@ -42,6 +42,6 @@ retrieval 评价中，Complex Reasoning 和 Fact Retrieval 各有 168 道题的�
 
 工作台在 `graphrag-workbench/` 中提供索引状态、七种检索方法、文本证据、图路径和子图展示。检索算法位于 `graphrag6-retrieval/`。项目实验采用 DeepSeek API 进行抽取和问答，本地 Qwen3-Embedding-0.6B 提供向量表示。
 
-索引和批量实验输出保留于实验运行环境；仓库包含数据处理、索引配置、查询、评测与方法比较所需的代码及汇总说明。运行入口见[工作台 README](../graphrag-workbench/README.md)。
+索引和批量实验输出保留于实验运行环境；仓库包含数据处理、索引配置、查询、评测与方法比较所需的代码及汇总说明。运行入口见[工作台 README](https://github.com/ysaaa-rain/GraphRAG-6/blob/main/graphrag-workbench/README.md)。
 
 相关文件：[Enron 应用方案](./实际应用领域方案.md)、[数据处理范围](./Enron数据预处理与建库范围.md)、[评测方案](./评测方案.md)。

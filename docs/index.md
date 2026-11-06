@@ -11,5 +11,5 @@
 - [Enron 应用](实际应用领域方案.md)
 - [基线来源](基线说明.md)
 - [开发与协作](协作与质量规范.md)
-- [实验配置与证据目录](../experiments/README.md)
+- [实验配置与证据目录](https://github.com/ysaaa-rain/GraphRAG-6/blob/main/experiments/README.md)
 - [实验环境与异常记录](实验环境与异常记录.md)

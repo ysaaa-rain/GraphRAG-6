@@ -19,6 +19,10 @@ packages/*/LICENSE
 data/raw/
 data/processed/
 experiments/outputs/
+experiments/**/output/
+experiments/**/lancedb/
+experiments/**/cache/
+experiments/**/logs/
 /output/
 runs/
 ragtest/
